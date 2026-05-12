@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parker Rupe — Mechanical Engineer & Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --border: #1e1e1e;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --text: #f0ede6;
+    --muted: #5a5a5a;
+    --card: #141414;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-resume {
+    color: var(--accent) !important;
+    border: 1px solid rgba(232,255,71,0.35);
+    padding: 0.38rem 0.9rem;
+    transition: background 0.2s, color 0.2s !important;
+  }
+
+  .nav-resume:hover { background: var(--accent) !important; color: #0a0a0a !important; }
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 3rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    right: -0.03em;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(16rem, 28vw, 30rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232,255,71,0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.4rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 11vw, 11rem);
+    line-height: 0.88;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.27rem 0.72rem;
+  }
+
+  .badge-sponsor { color: var(--accent2); border: 1px solid rgba(255,107,53,0.32); }
+  .badge-sponsor::before { content: '◆ '; font-size: 0.48rem; }
+  .badge-event { color: #7eb8ff; border: 1px solid rgba(126,184,255,0.28); }
+  .badge-event::before { content: '★ '; font-size: 0.55rem; }
+  .badge-edu { color: #b8ff7e; border: 1px solid rgba(184,255,126,0.28); }
+  .badge-edu::before { content: '◉ '; font-size: 0.52rem; }
+
+  .hero-desc {
+    max-width: 540px;
+    font-size: 1.03rem;
+    color: #8a8a8a;
+    line-height: 1.72;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+    margin-bottom: 2.4rem;
+  }
+
+  .hero-desc strong { color: var(--text); font-weight: 600; }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #0a0a0a;
+    padding: 0.8rem 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--accent2); }
+
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--text);
+    padding: 0.8rem 2rem;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem; right: 3rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+  }
+
+  section { position: relative; z-index: 1; }
+
+  .section-pad { padding: 6rem 3rem; border-top: 1px solid var(--border); }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: 0.05em;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .project-card {
+    background: var(--card);
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--accent);
+    transition: height 0.3s ease;
+  }
+
+  .project-card:hover { background: #181818; }
+  .project-card:hover::before { height: 100%; }
+  .project-card.featured { grid-column: span 2; background: #0f0f08; }
+
+  .project-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+
+  .project-tag.rocket { color: #7eb8ff; }
+  .project-tag.composite { color: #b8ff7e; }
+  .project-tag.space { color: #d4a8ff; }
+
+  .project-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .project-card.featured .project-name { font-size: 3rem; }
+
+  .project-desc {
+    font-size: 0.88rem;
+    color: #777;
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .project-desc strong { color: #ccc; }
+
+  .project-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    gap: 1rem;
+    margin-top: auto;
+  }
+
+  .project-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .stars {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent);
+  }
+
+  .project-arrow {
+    font-size: 1.15rem;
+    color: var(--muted);
+    transition: color 0.2s, transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .project-card:hover .project-arrow { color: var(--accent); transform: translate(3px,-3px); }
+
+  .featured-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #0a0a0a;
+    padding: 0.18rem 0.55rem;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-card.dim { opacity: 0.44; cursor: default; pointer-events: none; }
+
+  .dim-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.18rem 0.55rem;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: #8a8a8a;
+    line-height: 1.8;
+    margin-bottom: 1.15rem;
+    font-size: 1.02rem;
+  }
+
+  .about-text p strong { color: var(--text); }
+
+  .about-right { display: flex; flex-direction: column; gap: 1px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stat-box { background: var(--card); padding: 1.5rem; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .skills-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 1.6rem;
+  }
+
+  .skills-block-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  .skill-cat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.9rem;
+    margin-bottom: 0.38rem;
+  }
+
+  .skill-cat:first-of-type { margin-top: 0; }
+
+  .skill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .skill-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: #aaa;
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    padding: 0.22rem 0.6rem;
+  }
+
+  /* EXPERIENCE */
+  .exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .exp-card { background: var(--card); padding: 2rem; }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.9rem;
+    gap: 1rem;
+  }
+
+  .exp-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .exp-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    white-space: nowrap;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .exp-org {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .exp-bullets li {
+    font-size: 0.87rem;
+    color: #777;
+    line-height: 1.6;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .exp-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.68rem;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-intro { font-size: 1.02rem; color: #8a8a8a; line-height: 1.8; }
+  .contact-intro strong { color: var(--text); }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.4rem;
+    background: var(--card);
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.2s;
+  }
+
+  .contact-link:hover { background: #181818; }
+
+  .contact-link-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.22rem;
+  }
+
+  .contact-link-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+  }
+
+  .contact-arrow {
+    color: var(--muted);
+    font-size: 1.1rem;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .contact-link:hover .contact-arrow { color: var(--accent); transform: translate(3px,-3px); }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .hero { padding: 0 1.5rem 3rem; }
+    .hero-bg-text { font-size: 42vw; }
+    .section-pad { padding: 4rem 1.5rem; }
+    .project-card.featured { grid-column: span 1; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .exp-grid { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .hero-title { font-size: 4rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Parker Rupe</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="parker-rupe-resume.pdf" target="_blank" class="nav-resume">Résumé ↗</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-text" aria-hidden="true">PR</div>
+  <div class="hero-eyebrow">Mechanical Engineer · Additive Manufacturing · Rocketry</div>
+  <h1 class="hero-title">Parker<br><span>Rupe</span></h1>
+  <div class="hero-badges">
+    <span class="badge badge-sponsor">Sponsored by SUNLU Filament</span>
+    <span class="badge badge-event">Open Sauce 2025 · San Francisco</span>
+    <span class="badge badge-edu">BSU Applied Mathematics</span>
+  </div>
+  <p class="hero-desc">
+    High school engineer building things that <strong>shouldn't exist yet</strong>.
+    Custom 3D printers, composite winding machines, and high-power rockets —
+    all designed from scratch and fully open source.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-primary">View Projects</a>
+    <a href="parker-rupe-resume.pdf" target="_blank" class="btn-secondary">Download Résumé ↗</a>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">Scroll</div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section-pad">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Projects</h2>
+  </div>
+
+  <div class="projects-grid">
+
+    <a href="https://github.com/ProgrammerTurtle/DoNotDelta" target="_blank" rel="noopener" class="project-card featured reveal">
+      <div>
+        <div class="featured-badge">Flagship · Exhibited at Open Sauce 2025</div>
+        <div class="project-tag">3D Printer · Novel Kinematics</div>
+      </div>
+      <div class="project-name">DoNotDelta</div>
+      <p class="project-desc">
+        The first-ever implementation of a Colinear Delta — a novel hybrid of standard Delta and Quantum Delta CNC motion. Both the hotend and the bed move independently using delta kinematics. Exhibited at <strong>Open Sauce 2025</strong> in San Francisco — a premier maker convention attended by leading global figures in engineering and making. Rigid 2040 frame, 0.9° steppers, remote CPAP part cooling, self-contained RRF with Ethernet.
+      </p>
+      <div class="project-footer">
+        <div>
+          <div class="project-meta">Open Source · RepRapFirmware · Community Recognized</div>
+          <div class="stars">★ 24 GitHub Stars</div>
+        </div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/Quantumania" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag">3D Printer · High Speed</div>
+      <div class="project-name">Quantumania</div>
+      <p class="project-desc">
+        A modernized quantum delta optimized for high-speed performance through custom composites work, achieving a total moving mass of <strong>under 120 grams</strong>. Direct-drive BoomBox extruder, AWD motion, triple 124CFM axial fans, carbon fiber arms, MGN12C rails. Sponsored by Polymaker, Siraya Tech, Fysetc, and HackClub.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">120g Moving Mass · RepRapFirmware · HackClub Highway</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/CharlotteCNCWinder" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag composite">Composite Manufacturing</div>
+      <div class="project-name">Charlotte CNC Winder</div>
+      <p class="project-desc">
+        A fully custom 3-axis CNC filament winder for high-performance rocketry components. The <strong>largest working area of any open-source composites winder</strong>: 60" length by 10" diameter. Winds carbon fiber, fiberglass, and basalt composite tubes for rocket bodies and motor casings. Novel "Omegadrive" belted linear system, Marlin firmware. HackClub Blueprint funded.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">60" × 10" · Marlin · HackClub Blueprint Grant</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/BECCA" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag rocket">High Power Rocketry · L1</div>
+      <div class="project-name">BECCA</div>
+      <p class="project-desc">
+        Big Engine Certification Completion Attempt. A fully custom 5-foot L1 certification rocket targeting <strong>Mach 0.8</strong> and 1-mile altitude on an Aerotech I500. Dual-deploy parachute system with custom GPS avionics using a Particle Boron and Adafruit Ultimate GPS for post-flight recovery.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">5ft · 3" dia · Mach 0.8 · Custom GPS Avionics</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/CameraModule" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag space">Spaceshot Rocketry · Electronics</div>
+      <div class="project-name">Spaceshot Camera Module</div>
+      <p class="project-desc">
+        A self-contained camera module for a high-performance 3" rocket, engineered to withstand <strong>Mach 6+</strong> velocities and operate beyond the <strong>Kármán line (100km)</strong>. Integrates a COTS camera with a custom LoRaWAN-enabled control PCB and custom machined mounting and camera shrouding.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">Mach 6+ · 100km Rated · Custom PCB · LoRaWAN</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/RFPToolhead" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag">3D Printer · Toolhead</div>
+      <div class="project-name">RFP Toolhead</div>
+      <p class="project-desc">
+        A high-performance cartesian toolhead with an SLM aluminum monobody cooling duct and heatsink. Applied <strong>fluid dynamics principles</strong> to duct and hotend design for optimized thermal and airflow performance. Orbiter 1.5 extruder, BTT Eddy Duo scanning Z probe. Designed in under 48 hours for HackClub Rework.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">SLM Aluminum · CFD-informed · MIT License</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/ProgrammerTurtle/ChubYAxis" target="_blank" rel="noopener" class="project-card reveal">
+      <div class="project-tag">3D Printer · Hardware Mod</div>
+      <div class="project-name">ChubY Axis</div>
+      <p class="project-desc">
+        A massively overengineered high-performance Y-axis assembly for the Ender 3. 4040 base, 3090 Y extrusion, dual MGN12H rails, AWD motors, and huge bracing — chunky by design. Built in 11–12 hours for HackClub Rework.
+      </p>
+      <div class="project-footer">
+        <div class="project-meta">4040 Frame · Dual MGN12H · HackClub Rework</div>
+        <span class="project-arrow">↗</span>
+      </div>
+    </a>
+
+    <div class="project-card dim reveal">
+      <div class="dim-label">In Progress</div>
+      <div class="project-tag rocket">Amateur Rocketry</div>
+      <div class="project-name">Amateur Sounding Rocket</div>
+      <p class="project-desc">A fully custom amateur sounding rocket. Repository coming soon.</p>
+      <div class="project-footer">
+        <div class="project-meta">Repo coming soon</div>
+        <span class="project-arrow">—</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-pad">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">About</h2>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm <strong>Parker Rupe</strong>, a high school student concurrently pursuing an Associates in Applied Mathematics at <strong>Boise State University</strong>. My focus is mechanical engineering with a specialty in additive manufacturing — not just using 3D printers, but designing entirely new ones from scratch.</p>
+      <p>From delta kinematic hybrids to composite fiber winders to high-power rocketry, every project pushes into territory that hasn't been explored yet. I document everything openly on GitHub so the broader community can learn from and build on the work.</p>
+      <p>I'm proud to be <strong>sponsored by SUNLU Filament</strong>, whose material support has made several builds possible. I've also received grants from HackClub's Blueprint and Highway programs, and been sponsored by Polymaker, Fysetc, and Siraya Tech.</p>
+      <p>My long-term goal is pushing additive manufacturing into <strong>aerospace and high-performance applications</strong> — winding my own rocket motor casings, printing flight-critical hardware, and eventually reaching for spaceshot altitudes.</p>
+    </div>
+
+    <div class="about-right reveal">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num">7+</div>
+          <div class="stat-label">Open Source Projects</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">24★</div>
+          <div class="stat-label">GitHub Stars</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Sponsors & Grants</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">100km</div>
+          <div class="stat-label">Target Altitude</div>
+        </div>
+      </div>
+
+      <div class="skills-block">
+        <div class="skills-block-title">Skills & Tools</div>
+
+        <div class="skill-cat">CAD</div>
+        <div class="skill-row">
+          <span class="skill-tag">Fusion 360</span>
+          <span class="skill-tag">Onshape</span>
+          <span class="skill-tag">SolidWorks</span>
+          <span class="skill-tag">Inventor</span>
+        </div>
+
+        <div class="skill-cat">Analysis</div>
+        <div class="skill-row">
+          <span class="skill-tag">Autodesk CFD</span>
+          <span class="skill-tag">FEA / CAE</span>
+        </div>
+
+        <div class="skill-cat">Manufacturing</div>
+        <div class="skill-row">
+          <span class="skill-tag">FDM / FFF Printing</span>
+          <span class="skill-tag">CNC Machining</span>
+          <span class="skill-tag">Composite Layup</span>
+          <span class="skill-tag">Filament Winding</span>
+        </div>
+
+        <div class="skill-cat">Electronics & Code</div>
+        <div class="skill-row">
+          <span class="skill-tag">PCB Design (EasyEDA)</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">G-Code</span>
+          <span class="skill-tag">Firmware Dev</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="section-pad">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Experience</h2>
+  </div>
+
+  <div class="exp-grid reveal">
+    <div class="exp-card">
+      <div class="exp-header">
+        <div>
+          <div class="exp-title">HackClub Organizer</div>
+          <div class="exp-org">HackClub · International</div>
+        </div>
+        <div class="exp-period">Mar 2025 – Present</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Co-developed universal hardware guidelines adopted across future HackClub programs</li>
+        <li>Standardized protocols for handling and stewardship of participant hardware projects</li>
+        <li>Evaluated participant hardware projects for grant eligibility, contributing to funding decisions</li>
+        <li>Expanded awareness of HackClub opportunities to teens across 119+ countries</li>
+      </ul>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-header">
+        <div>
+          <div class="exp-title">Stocker / Attendant</div>
+          <div class="exp-org">Great Scotts Gas Station · Boise, ID</div>
+        </div>
+        <div class="exp-period">Mar 2024 – Oct 2024</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Performed routine maintenance of store infrastructure and facilities</li>
+        <li>Managed product inventory across multiple brands, suppliers, and distribution channels</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-pad">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Contact</h2>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-intro reveal">
+      <p>Interested in <strong>collaboration, sponsorship, or just want to talk shop</strong> about 3D printing or rocketry? Reach out — I'm always happy to connect with people who are building things.</p>
+    </div>
+
+    <div class="contact-links reveal">
+      <a href="mailto:parkerrupe42@gmail.com" class="contact-link">
+        <div>
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">parkerrupe42@gmail.com</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a href="https://github.com/ProgrammerTurtle" target="_blank" rel="noopener" class="contact-link">
+        <div>
+          <div class="contact-link-label">GitHub</div>
+          <div class="contact-link-value">github.com/ProgrammerTurtle</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a href="https://www.instagram.com/parker_rupe" target="_blank" rel="noopener" class="contact-link">
+        <div>
+          <div class="contact-link-label">Instagram</div>
+          <div class="contact-link-value">@parker_rupe</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a href="https://ko-fi.com/turtlegod" target="_blank" rel="noopener" class="contact-link">
+        <div>
+          <div class="contact-link-label">Ko-fi / Support</div>
+          <div class="contact-link-value">ko-fi.com/turtlegod</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a href="parker-rupe-resume.pdf" target="_blank" class="contact-link">
+        <div>
+          <div class="contact-link-label">Résumé</div>
+          <div class="contact-link-value">Download PDF ↓</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Parker Rupe</div>
+  <div class="footer-right">Mechanical Engineer · Open Source Builder</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
