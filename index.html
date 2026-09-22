@@ -1,980 +1,593 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parker Rupe — Aspiring Mechanical Engineer & Open Source Builder</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parker Rupe</title>
+<meta name="description" content="Parker Rupe builds 3D printers, composite winders, and high-power rockets from scratch. All open source.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --border: #1e1e1e;
-    --accent: #e8ff47;
-    --accent2: #ff6b35;
-    --text: #f0ede6;
-    --muted: #5a5a5a;
-    --card: #141414;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.4;
-  }
-
-  .grid-bg {
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.2rem 3rem;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,10,10,0.88);
-    backdrop-filter: blur(12px);
-  }
-
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-    align-items: center;
-  }
-
-  .nav-links a {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--accent); }
-
-  .nav-resume {
-    color: var(--accent) !important;
-    border: 1px solid rgba(232,255,71,0.35);
-    padding: 0.38rem 0.9rem;
-    transition: background 0.2s, color 0.2s !important;
-  }
-
-  .nav-resume:hover { background: var(--accent) !important; color: #0a0a0a !important; }
-
-  .hero {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 3rem 4rem;
-    overflow: hidden;
-  }
-
-  .hero-bg-text {
-    position: absolute;
-    top: 50%;
-    right: -0.03em;
-    transform: translateY(-50%);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(16rem, 28vw, 30rem);
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(232,255,71,0.06);
-    line-height: 1;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .hero-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.4rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-  }
-
-  .hero-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(4rem, 11vw, 11rem);
-    line-height: 0.88;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.4s forwards;
-  }
-
-  .hero-title span { color: var(--accent); }
-
-  .hero-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-bottom: 1.8rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.5s forwards;
-  }
-
-  .badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.27rem 0.72rem;
-  }
-
-  .badge-sponsor { color: var(--accent2); border: 1px solid rgba(255,107,53,0.32); }
-  .badge-sponsor::before { content: '◆ '; font-size: 0.48rem; }
-  .badge-event { color: #7eb8ff; border: 1px solid rgba(126,184,255,0.28); }
-  .badge-event::before { content: '★ '; font-size: 0.55rem; }
-  .badge-edu { color: #b8ff7e; border: 1px solid rgba(184,255,126,0.28); }
-  .badge-edu::before { content: '◉ '; font-size: 0.52rem; }
-
-  .hero-desc {
-    max-width: 540px;
-    font-size: 1.03rem;
-    color: #8a8a8a;
-    line-height: 1.72;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.6s forwards;
-    margin-bottom: 2.4rem;
-  }
-
-  .hero-desc strong { color: var(--text); font-weight: 600; }
-
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.8s forwards;
-  }
-
-  .btn-primary {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: #0a0a0a;
-    padding: 0.8rem 2rem;
-    text-decoration: none;
-    font-weight: 500;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-
-  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--accent2); }
-
-  .btn-secondary {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: transparent;
-    color: var(--text);
-    padding: 0.8rem 2rem;
-    text-decoration: none;
-    border: 1px solid var(--border);
-    transition: border-color 0.2s, color 0.2s;
-  }
-
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 2rem; right: 3rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    writing-mode: vertical-rl;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    opacity: 0;
-    animation: fadeUp 1s ease 1.2s forwards;
-  }
-
-  .hero-scroll::after {
-    content: '';
-    width: 1px; height: 60px;
-    background: linear-gradient(to bottom, var(--muted), transparent);
-  }
-
-  section { position: relative; z-index: 1; }
-
-  .section-pad { padding: 6rem 3rem; border-top: 1px solid var(--border); }
-
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .section-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    letter-spacing: 0.05em;
-  }
-
-  /* PROJECTS */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .project-card {
-    background: var(--card);
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    transition: background 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .project-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 0;
-    background: var(--accent);
-    transition: height 0.3s ease;
-  }
-
-  .project-card:hover { background: #181818; }
-  .project-card:hover::before { height: 100%; }
-  .project-card.featured { grid-column: span 2; background: #0f0f08; }
-
-  .project-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent2);
-  }
-
-  .project-tag.rocket { color: #7eb8ff; }
-  .project-tag.composite { color: #b8ff7e; }
-  .project-tag.space { color: #d4a8ff; }
-
-  .project-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 0.04em;
-    line-height: 1;
-  }
-
-  .project-card.featured .project-name { font-size: 3rem; }
-
-  .project-desc {
-    font-size: 0.88rem;
-    color: #777;
-    line-height: 1.65;
-    flex: 1;
-  }
-
-  .project-desc strong { color: #ccc; }
-
-  .project-footer {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    gap: 1rem;
-    margin-top: auto;
-  }
-
-  .project-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .stars {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--accent);
-  }
-
-  .project-arrow {
-    font-size: 1.15rem;
-    color: var(--muted);
-    transition: color 0.2s, transform 0.2s;
-    flex-shrink: 0;
-  }
-
-  .project-card:hover .project-arrow { color: var(--accent); transform: translate(3px,-3px); }
-
-  .featured-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: #0a0a0a;
-    padding: 0.18rem 0.55rem;
-    display: inline-block;
-    width: fit-content;
-    margin-bottom: 0.4rem;
-  }
-
-  .project-card.dim { opacity: 0.44; cursor: default; pointer-events: none; }
-
-  .dim-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 0.18rem 0.55rem;
-    display: inline-block;
-    width: fit-content;
-  }
-
-  /* ABOUT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-
-  .about-text p {
-    color: #8a8a8a;
-    line-height: 1.8;
-    margin-bottom: 1.15rem;
-    font-size: 1.02rem;
-  }
-
-  .about-text p strong { color: var(--text); }
-
-  .about-right { display: flex; flex-direction: column; gap: 1px; }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .stat-box { background: var(--card); padding: 1.5rem; }
-
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.5rem;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 0.35rem;
-  }
-
-  .stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .skills-block {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-top: none;
-    padding: 1.6rem;
-  }
-
-  .skills-block-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.1rem;
-  }
-
-  .skill-cat {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 0.9rem;
-    margin-bottom: 0.38rem;
-  }
-
-  .skill-cat:first-of-type { margin-top: 0; }
-
-  .skill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-  .skill-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: #aaa;
-    background: #1a1a1a;
-    border: 1px solid var(--border);
-    padding: 0.22rem 0.6rem;
-  }
-
-  /* EXPERIENCE */
-  .exp-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .exp-card { background: var(--card); padding: 2rem; }
-
-  .exp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.9rem;
-    gap: 1rem;
-  }
-
-  .exp-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    letter-spacing: 0.04em;
-    line-height: 1.1;
-  }
-
-  .exp-period {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    white-space: nowrap;
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .exp-org {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .exp-bullets li {
-    font-size: 0.87rem;
-    color: #777;
-    line-height: 1.6;
-    padding-left: 1.2rem;
-    position: relative;
-  }
-
-  .exp-bullets li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 0.68rem;
-  }
-
-  /* CONTACT */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-
-  .contact-intro { font-size: 1.02rem; color: #8a8a8a; line-height: 1.8; }
-  .contact-intro strong { color: var(--text); }
-
-  .contact-links {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .contact-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.1rem 1.4rem;
-    background: var(--card);
-    text-decoration: none;
-    color: var(--text);
-    transition: background 0.2s;
-  }
-
-  .contact-link:hover { background: #181818; }
-
-  .contact-link-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.22rem;
-  }
-
-  .contact-link-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--accent);
-  }
-
-  .contact-arrow {
-    color: var(--muted);
-    font-size: 1.1rem;
-    transition: color 0.2s, transform 0.2s;
-  }
-
-  .contact-link:hover .contact-arrow { color: var(--accent); transform: translate(3px,-3px); }
-
-  footer {
-    position: relative;
-    z-index: 1;
-    padding: 2rem 3rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .footer-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.15rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-
-  .footer-right {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.65s ease, transform 0.65s ease;
-  }
-
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { gap: 1.2rem; }
-    .hero { padding: 0 1.5rem 3rem; }
-    .hero-bg-text { font-size: 42vw; }
-    .section-pad { padding: 4rem 1.5rem; }
-    .project-card.featured { grid-column: span 1; }
-    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .exp-grid { grid-template-columns: 1fr; }
-    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
-    .projects-grid { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 600px) {
-    .nav-links { display: none; }
-    .hero-title { font-size: 4rem; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-  }
+/* Neometric by Andres Sanchez, CC BY-NC-SA 3.0 (see fonts/Neometric-LICENSE.txt).
+   It ships in one weight, so it covers every weight here instead of getting faux-bolded. */
+@font-face { font-family: "Neometric"; src: url("fonts/Neometric-Medium.otf") format("opentype"); font-weight: 100 900; font-display: swap; }
+
+:root {
+  --bone: #ebe7df;
+  --bone-2: #dfd9cd;
+  --ink: #151311;
+  --ink-2: #221e1b;
+  --dim: #6f6a62;
+  --gold: #f2a900;
+  --orange: #ea6d23;
+  --red: #cf3a20;
+  --brown: #6e2a17;
+
+  --display: "Neometric", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --max: 1240px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+::selection { background: var(--gold); color: var(--ink); }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.label { font-family: var(--mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.display { font-family: var(--display); font-weight: 400; letter-spacing: -.01em; }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: 0; z-index: 50; background: var(--bone); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+.brand { font-family: var(--display); font-weight: 400; font-size: 22px; text-decoration: none; letter-spacing: -.01em; }
+.brand span { color: var(--orange); }
+.nav-links { display: flex; align-items: center; gap: 30px; }
+.nav-links a { font-family: var(--mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
+.nav-links a:not(.btn):hover { color: var(--red); }
+@media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--display); font-weight: 400; font-size: 17px;
+  text-decoration: none;
+  padding: 15px 26px; border-radius: 999px;
+  background: var(--ink); color: var(--bone);
+  border: 2px solid var(--ink);
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn:hover { background: var(--red); border-color: var(--red); color: var(--bone); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+.btn.small { padding: 9px 18px; font-size: 15px; }
+
+/* ---------- stripes (signature element) ----------
+   Four concentric bands that run in from the left, then bend up the right side. */
+.stripes { --w: clamp(10px, 1.7vw, 26px); --R: clamp(110px, 16vw, 250px); --edge-b: clamp(24px, 4vw, 56px); --edge-r: var(--gutter);
+  position: absolute; inset: 0; pointer-events: none; }
+.stripes i {
+  position: absolute; left: 0; top: 0;
+  right: calc(var(--edge-r) + var(--k) * var(--w));
+  bottom: calc(var(--edge-b) + var(--k) * var(--w));
+  border-style: solid; border-width: 0 var(--w) var(--w) 0;
+  border-bottom-right-radius: calc(var(--R) - var(--k) * var(--w));
+}
+.stripes i:nth-child(1) { --k: 0; border-color: var(--brown); }
+.stripes i:nth-child(2) { --k: 1; border-color: var(--red); }
+.stripes i:nth-child(3) { --k: 2; border-color: var(--orange); }
+.stripes i:nth-child(4) { --k: 3; border-color: var(--gold); }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; }
+.hero-inner {
+  position: relative;
+  padding-top: clamp(40px, 7vw, 96px);
+  padding-right: calc(var(--gutter) + 4 * clamp(10px, 1.7vw, 26px) + 24px);
+  padding-bottom: calc(clamp(24px, 4vw, 56px) + 4 * clamp(10px, 1.7vw, 26px) + clamp(40px, 6vw, 80px));
+}
+.hero .label { color: var(--dim); margin-bottom: 18px; }
+.hero h1 {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(60px, 15vw, 216px);
+  line-height: .84; letter-spacing: -.035em;
+  margin: 0 0 clamp(24px, 3vw, 40px);
+}
+.hero-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
+.hero-lede { font-size: clamp(20px, 2.2vw, 26px); line-height: 1.35; max-width: 30ch; margin: 0; }
+.hero-lede b { font-weight: 700; color: var(--red); }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- facts strip ---------- */
+.facts { background: var(--ink); color: var(--bone); }
+.facts .wrap { display: grid; grid-template-columns: repeat(3, 1fr); }
+.fact { padding: 30px 28px 32px; border-left: 1px solid rgba(235,231,223,.16); }
+.fact:first-child { border-left: 0; padding-left: 0; }
+.fact .label { color: var(--gold); font-size: 12px; }
+.fact b { display: block; margin-top: 8px; font-family: var(--display); font-weight: 400; font-size: clamp(20px, 2.1vw, 26px); line-height: 1.15; }
+@media (max-width: 760px) {
+  .facts .wrap { grid-template-columns: 1fr; }
+  .fact { border-left: 0; border-top: 1px solid rgba(235,231,223,.16); padding: 22px 0; }
+  .fact:first-child { border-top: 0; }
+}
+
+/* ---------- section scaffolding ---------- */
+section.block { padding: clamp(72px, 10vw, 136px) 0; }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px 40px; margin-bottom: clamp(40px, 5vw, 64px); }
+.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(52px, 9vw, 128px); line-height: .88; letter-spacing: -.03em; margin: 0; }
+.sec-head .label { margin-bottom: 14px; }
+.sec-head p { max-width: 36ch; margin: 0; font-size: 18px; }
+
+/* ---------- projects (dark) ---------- */
+.dark { background: var(--ink); color: var(--bone); }
+.dark .sec-head .label { color: var(--gold); }
+.dark .sec-head p { color: #b8b1a6; }
+
+.featured {
+  display: grid; grid-template-columns: 1.05fr 1fr;
+  background: var(--ink-2);
+  border-radius: 32px; overflow: hidden;
+  margin-bottom: clamp(56px, 7vw, 88px);
+}
+.featured-art {
+  position: relative;
+  background-color: #1a1715;
+  background-image: radial-gradient(rgba(235,231,223,.14) 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+  display: grid; place-items: center;
+  padding: 40px 28px 56px; min-height: 420px;
+}
+.featured-art svg { width: 100%; max-width: 360px; height: auto; }
+.featured-art .label { position: absolute; left: 24px; bottom: 20px; font-size: 11px; color: #8d867b; }
+.featured-body { padding: clamp(28px, 4vw, 52px); display: flex; flex-direction: column; }
+.flag { align-self: flex-start; background: var(--gold); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 12px; margin-bottom: 22px; }
+.featured h3 { font-family: var(--display); font-weight: 400; font-size: clamp(44px, 6vw, 80px); line-height: .9; letter-spacing: -.03em; margin: 8px 0 20px; }
+.featured .kicker { color: #8d867b; }
+.featured p { margin: 0 0 14px; color: #d8d2c7; }
+.featured .detail { color: #9d968b; font-size: 16px; }
+.featured .go { margin-top: auto; padding-top: 24px; }
+.featured .btn { background: var(--bone); color: var(--ink); border-color: var(--bone); }
+.featured .btn:hover { background: var(--gold); border-color: var(--gold); }
+@media (max-width: 880px) {
+  .featured { grid-template-columns: 1fr; }
+  .featured-art { min-height: 300px; }
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.chips li { font-family: var(--mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid currentColor; opacity: .85; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.filters button {
+  font-family: var(--mono); font-size: 13px; letter-spacing: .04em; text-transform: uppercase;
+  padding: 9px 16px; border-radius: 999px; cursor: pointer;
+  background: transparent; color: var(--bone); border: 1px solid rgba(235,231,223,.35);
+}
+.filters button:hover { border-color: var(--bone); }
+.filters button[aria-pressed="true"] { background: var(--bone); color: var(--ink); border-color: var(--bone); }
+.filters .n { opacity: .55; margin-left: 6px; }
+
+.manifest { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(235,231,223,.18); }
+.row {
+  --c: var(--orange);
+  display: grid; grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1.35fr) 52px;
+  gap: 28px; align-items: start;
+  padding: 32px 20px;
+  border-bottom: 1px solid rgba(235,231,223,.18);
+  border-radius: 22px;
+  text-decoration: none; color: var(--bone);
+  transition: background .18s, color .18s;
+}
+.row * { transition: color .18s; }
+.row[data-cat="rocketry"] { --c: var(--gold); }
+.row[data-cat="composites"] { --c: var(--red); }
+a.row:hover { background: var(--c); color: var(--ink); border-bottom-color: transparent; }
+.row .no { font-family: var(--mono); font-size: 14px; padding-top: 10px; color: var(--c); }
+a.row:hover .no { color: var(--ink); }
+.cat { display: inline-block; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--c); margin-bottom: 8px; }
+a.row:hover .cat { color: var(--ink); }
+.row h3 { font-family: var(--display); font-weight: 400; font-size: clamp(32px, 4vw, 50px); line-height: .95; letter-spacing: -.02em; margin: 0; }
+.row p { margin: 4px 0 16px; font-size: 17px; color: #cfc8bc; }
+a.row:hover p { color: var(--ink); }
+.row .note { font-size: 15px; font-style: italic; margin-top: -8px; }
+.arrow {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: grid; place-items: center; font-size: 20px;
+  transition: transform .18s, background .18s, color .18s;
+}
+a.row:hover .arrow { background: var(--ink); color: var(--c); border-color: var(--ink); transform: rotate(45deg); }
+.row.wip { color: #8d867b; }
+.row.wip .arrow { border-style: dashed; font-family: var(--mono); font-size: 11px; }
+.hidden { display: none !important; }
+@media (max-width: 860px) {
+  .row { grid-template-columns: 40px minmax(0, 1fr); gap: 12px 16px; padding: 26px 12px; }
+  .row .desc { grid-column: 2; }
+  .row .arrow { display: none; }
+}
+
+/* ---------- about ---------- */
+.about-top { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+.pull { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 4.6vw, 62px); line-height: 1; letter-spacing: -.025em; margin: 0; }
+.pull span { color: var(--red); }
+.about-copy p { margin: 0 0 18px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: clamp(56px, 7vw, 96px) 0; }
+.stat { padding: 22px 20px 0 0; border-top: 3px solid var(--ink); position: relative; }
+.stat::before { content: ""; position: absolute; top: -3px; left: 0; width: 56px; height: 3px; background: var(--c); }
+.stat:nth-child(1) { --c: var(--gold); } .stat:nth-child(2) { --c: var(--orange); }
+.stat:nth-child(3) { --c: var(--red); } .stat:nth-child(4) { --c: var(--brown); }
+.stat b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(52px, 7vw, 104px); line-height: .9; letter-spacing: -.04em; }
+.stat .label { display: block; margin-top: 12px; color: var(--dim); font-size: 12px; }
+.skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.skills h3 { margin: 0 0 12px; font-family: var(--mono); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); }
+.skills ul { list-style: none; margin: 0; padding: 0; }
+.skills li { font-family: var(--display); font-weight: 400; font-size: 20px; padding: 7px 0; border-bottom: 1px solid var(--bone-2); }
+@media (max-width: 880px) {
+  .about-top { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+  .skills { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 460px) { .skills { grid-template-columns: 1fr; } }
+
+/* ---------- experience ---------- */
+#experience { padding-top: 0; }
+.log { border-top: 3px solid var(--ink); }
+.log-entry { display: grid; grid-template-columns: 260px 1fr; gap: 40px; padding: 40px 0; border-bottom: 1px solid var(--bone-2); }
+.log-when { color: var(--dim); padding-top: 12px; }
+.log-entry h3 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3.6vw, 44px); line-height: 1; letter-spacing: -.02em; margin: 0 0 8px; }
+.log-entry .org { color: var(--red); margin-bottom: 20px; }
+.log-entry ul { margin: 0; padding: 0; list-style: none; max-width: 70ch; }
+.log-entry li { position: relative; padding-left: 22px; margin-bottom: 8px; }
+.log-entry li::before { content: ""; position: absolute; left: 0; top: .62em; width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+@media (max-width: 760px) { .log-entry { grid-template-columns: 1fr; gap: 6px; } .log-when { padding-top: 0; } }
+
+/* ---------- contact ---------- */
+.contact { background: var(--red); color: var(--bone); }
+.contact .sec-head .label { color: var(--gold); }
+.big-mail {
+  display: inline-block; margin-bottom: 48px;
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(30px, 6.4vw, 92px); line-height: 1; letter-spacing: -.03em;
+  text-decoration: none; overflow-wrap: anywhere;
+  border-bottom: 4px solid var(--gold); padding-bottom: 6px;
+}
+.big-mail:hover { color: var(--gold); }
+.channels { display: flex; flex-wrap: wrap; gap: 12px; }
+.channel {
+  display: inline-flex; align-items: baseline; gap: 12px;
+  padding: 14px 22px; border-radius: 999px;
+  background: var(--bone); color: var(--ink); text-decoration: none;
+  transition: background .15s;
+}
+.channel:hover { background: var(--gold); }
+.channel .label { font-size: 11px; color: var(--dim); }
+.channel b { font-family: var(--display); font-weight: 400; font-size: 18px; }
+
+/* ---------- footer ---------- */
+footer { background: var(--ink); color: #a9a298; }
+.bands { display: grid; grid-template-rows: repeat(4, 8px); }
+.bands i:nth-child(1) { background: var(--gold); } .bands i:nth-child(2) { background: var(--orange); }
+.bands i:nth-child(3) { background: var(--red); } .bands i:nth-child(4) { background: var(--brown); }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 28px; padding-bottom: 28px; }
+footer .label { font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
 
-<nav>
-  <a href="#" class="nav-logo">Parker Rupe</a>
-  <ul class="nav-links">
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="parker-rupe-resume.pdf" target="_blank" class="nav-resume">Résumé ↗</a></li>
-  </ul>
-</nav>
-
-<section class="hero">
-  <div class="hero-bg-text" aria-hidden="true">PR</div>
-  <div class="hero-eyebrow">Aspiring Mechanical Engineer · Additive Manufacturing · Rocketry</div>
-  <h1 class="hero-title">Parker<br><span>Rupe</span></h1>
-  <div class="hero-badges">
-    <span class="badge badge-sponsor">Sponsored by SUNLU Filament</span>
-    <span class="badge badge-event">Open Sauce 2025 · San Francisco</span>
-    <span class="badge badge-edu">BSU Applied Mathematics</span>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">parker rupe<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+      <a class="btn small" href="parker-rupe-resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    </nav>
   </div>
-  <p class="hero-desc">
-    High school engineer building things that <strong>shouldn't exist yet</strong>.
-    Custom 3D printers, composite winding machines, and high-power rockets —
-    all designed from scratch and fully open source.
-  </p>
-  <div class="hero-cta">
-    <a href="#projects" class="btn-primary">View Projects</a>
-    <a href="parker-rupe-resume.pdf" target="_blank" class="btn-secondary">Download Résumé ↗</a>
-  </div>
-  <div class="hero-scroll" aria-hidden="true">Scroll</div>
-</section>
+</header>
 
-<!-- PROJECTS -->
-<section id="projects" class="section-pad">
-  <div class="section-header reveal">
-    <span class="section-num">01</span>
-    <h2 class="section-title">Projects</h2>
-  </div>
-
-  <div class="projects-grid">
-
-    <a href="https://github.com/ProgrammerTurtle/DoNotDelta" target="_blank" rel="noopener" class="project-card featured reveal">
-      <div>
-        <div class="featured-badge">Flagship · Exhibited at Open Sauce 2025</div>
-        <div class="project-tag">3D Printer · Novel Kinematics</div>
-      </div>
-      <div class="project-name">DoNotDelta</div>
-      <p class="project-desc">
-        The first-ever implementation of a Colinear Delta — a novel hybrid of standard Delta and Quantum Delta CNC motion. Both the hotend and the bed move independently using delta kinematics. Exhibited at <strong>Open Sauce 2025</strong> in San Francisco — a premier maker convention attended by leading global figures in engineering and making. Rigid 2040 frame, 0.9° steppers, remote CPAP part cooling, self-contained RRF with Ethernet.
-      </p>
-      <div class="project-footer">
-        <div>
-          <div class="project-meta">Open Source · RepRapFirmware · Community Recognized</div>
-          <div class="stars">★ 24 GitHub Stars</div>
-        </div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/Quantumania" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag">3D Printer · High Speed</div>
-      <div class="project-name">Quantumania</div>
-      <p class="project-desc">
-        A modernized quantum delta optimized for high-speed performance through custom composites work, achieving a total moving mass of <strong>under 120 grams</strong>. Direct-drive BoomBox extruder, AWD motion, triple 124CFM axial fans, carbon fiber arms, MGN12C rails. Sponsored by Polymaker, Siraya Tech, Fysetc, and HackClub.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">120g Moving Mass · RepRapFirmware · HackClub Highway</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/CharlotteCNCWinder" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag composite">Composite Manufacturing</div>
-      <div class="project-name">Charlotte CNC Winder</div>
-      <p class="project-desc">
-        A fully custom 3-axis CNC filament winder for high-performance rocketry components. The <strong>largest working area of any open-source composites winder</strong>: 60" length by 10" diameter. Winds carbon fiber, fiberglass, and basalt composite tubes for rocket bodies and motor casings. Novel "Omegadrive" belted linear system, Marlin firmware. HackClub Blueprint funded.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">60" × 10" · Marlin · HackClub Blueprint Grant</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/BECCA" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag rocket">High Power Rocketry · L1</div>
-      <div class="project-name">BECCA</div>
-      <p class="project-desc">
-    <strong>B</strong>ig <strong>E</strong>ngine <strong>C</strong>ertification <strong>C</strong>ompletion <strong>A</strong>ttempt. A fully custom 5-foot L1 certification rocket targeting <strong>Mach 0.8</strong> and 1-mile altitude on an Aerotech I500. Dual-deploy parachute system with custom GPS avionics using a Particle Boron and Adafruit Ultimate GPS for post-flight recovery.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">5ft · 3" dia · Mach 0.8 · Custom GPS Avionics</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/CameraModule" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag space">Spaceshot Rocketry · Electronics</div>
-      <div class="project-name">Spaceshot Camera Module</div>
-      <p class="project-desc">
-        A self-contained camera module for a high-performance 3" rocket, engineered to withstand <strong>Mach 6+</strong> velocities and operate beyond the <strong>Kármán line (100km)</strong>. Integrates a COTS camera with a custom LoRaWAN-enabled control PCB and custom machined mounting and camera shrouding.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">Mach 6+ · 100km Rated · Custom PCB · LoRaWAN</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/RFPToolhead" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag">3D Printer · Toolhead</div>
-      <div class="project-name">RFP Toolhead</div>
-      <p class="project-desc">
-        A high-performance cartesian toolhead with an SLM aluminum monobody cooling duct and heatsink. Applied <strong>fluid dynamics principles</strong> to duct and hotend design for optimized thermal and airflow performance. Orbiter 1.5 extruder, BTT Eddy Duo scanning Z probe. Designed in under 48 hours for HackClub Rework.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">SLM Aluminum · CFD-informed · MIT License</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/ProgrammerTurtle/ChubYAxis" target="_blank" rel="noopener" class="project-card reveal">
-      <div class="project-tag">3D Printer · Hardware Mod</div>
-      <div class="project-name">ChubY Axis</div>
-      <p class="project-desc">
-        A massively overengineered high-performance Y-axis assembly for the Ender 3. 4040 base, 3090 Y extrusion, dual MGN12H rails, AWD motors, and huge bracing — chunky by design. Built in 11–12 hours for HackClub Rework.
-      </p>
-      <div class="project-footer">
-        <div class="project-meta">4040 Frame · Dual MGN12H · HackClub Rework</div>
-        <span class="project-arrow">↗</span>
-      </div>
-    </a>
-
-    <div class="project-card dim reveal">
-      <div class="dim-label">In Progress</div>
-      <div class="project-tag rocket">Amateur Rocketry</div>
-      <div class="project-name">Amateur Sounding Rocket</div>
-      <p class="project-desc">A fully custom amateur sounding rocket. Repository coming soon.</p>
-      <div class="project-footer">
-        <div class="project-meta">Repo coming soon</div>
-        <span class="project-arrow">—</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="section-pad">
-  <div class="section-header reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">About</h2>
-  </div>
-
-  <div class="about-grid">
-    <div class="about-text reveal">
-      <p>I'm <strong>Parker Rupe</strong>, a high school student concurrently pursuing an Associates in Applied Mathematics at <strong>Boise State University</strong>. My focus is mechanical engineering with a specialty in additive manufacturing — not just using 3D printers, but designing entirely new ones from scratch.</p>
-      <p>From delta kinematic hybrids to composite fiber winders to high-power rocketry, every project pushes into territory that hasn't been explored yet. I document everything openly on GitHub so the broader community can learn from and build on the work.</p>
-      <p>I'm proud to be <strong>sponsored by SUNLU Filament</strong>, whose material support has made several builds possible. I've also received grants from HackClub's Blueprint and Highway programs, and been sponsored by Polymaker, Fysetc, and Siraya Tech.</p>
-      <p>My long-term goal is pushing additive manufacturing into <strong>aerospace and high-performance applications</strong> — winding my own rocket motor casings, printing flight-critical hardware, and eventually reaching for spaceshot altitudes.</p>
-    </div>
-
-    <div class="about-right reveal">
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-num">7+</div>
-          <div class="stat-label">Open Source Projects</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">24★</div>
-          <div class="stat-label">GitHub Stars</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">5+</div>
-          <div class="stat-label">Sponsors & Grants</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">100km</div>
-          <div class="stat-label">Target Altitude</div>
-        </div>
-      </div>
-
-      <div class="skills-block">
-        <div class="skills-block-title">Skills & Tools</div>
-
-        <div class="skill-cat">CAD</div>
-        <div class="skill-row">
-          <span class="skill-tag">Fusion 360</span>
-          <span class="skill-tag">Onshape</span>
-          <span class="skill-tag">SolidWorks</span>
-          <span class="skill-tag">Inventor</span>
-        </div>
-
-        <div class="skill-cat">Analysis</div>
-        <div class="skill-row">
-          <span class="skill-tag">Autodesk CFD</span>
-          <span class="skill-tag">FEA / CAE</span>
-        </div>
-
-        <div class="skill-cat">Manufacturing</div>
-        <div class="skill-row">
-          <span class="skill-tag">FDM / FFF Printing</span>
-          <span class="skill-tag">CNC Machining</span>
-          <span class="skill-tag">Composite Layup</span>
-          <span class="skill-tag">Filament Winding</span>
-        </div>
-
-        <div class="skill-cat">Electronics & Code</div>
-        <div class="skill-row">
-          <span class="skill-tag">PCB Design (EasyEDA)</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">G-Code</span>
-          <span class="skill-tag">Firmware Dev</span>
+<main id="top">
+  <section class="hero">
+    <div class="stripes" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="wrap hero-inner">
+      <div class="label">Mechanical engineering · Additive manufacturing · Rocketry</div>
+      <h1>Parker<br>Rupe</h1>
+      <div class="hero-row">
+        <p class="hero-lede">I'm a high schooler in Boise who designs <b>3D printers, composite winders, and rockets</b> from scratch, and open-sources all of it.</p>
+        <div class="hero-ctas">
+          <a class="btn" href="#projects">See projects</a>
+          <a class="btn ghost" href="parker-rupe-resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- EXPERIENCE -->
-<section id="experience" class="section-pad">
-  <div class="section-header reveal">
-    <span class="section-num">03</span>
-    <h2 class="section-title">Experience</h2>
+  <div class="facts">
+    <div class="wrap">
+      <div class="fact"><span class="label">Shown at</span><b>Open Sauce 2025, San Francisco</b></div>
+      <div class="fact"><span class="label">Sponsored by</span><b>SUNLU Filament</b></div>
+      <div class="fact"><span class="label">Studying</span><b>Applied Mathematics, Boise State</b></div>
+    </div>
   </div>
 
-  <div class="exp-grid reveal">
-    <div class="exp-card">
-      <div class="exp-header">
+  <section class="block dark" id="projects">
+    <div class="wrap">
+      <div class="sec-head">
         <div>
-          <div class="exp-title">HackClub Organizer</div>
-          <div class="exp-org">HackClub · International</div>
+          <div class="label">01</div>
+          <h2>Projects</h2>
         </div>
-        <div class="exp-period">Mar 2025 – Present</div>
+        <p>Everything here is open source. Each project links to its GitHub repo.</p>
       </div>
-      <ul class="exp-bullets">
-        <li>Co-developed universal hardware guidelines adopted across future HackClub programs</li>
-        <li>Standardized protocols for handling and stewardship of participant hardware projects</li>
-        <li>Evaluated participant hardware projects for grant eligibility, contributing to funding decisions</li>
-        <li>Expanded awareness of HackClub opportunities to teens across 119+ countries</li>
-      </ul>
+      <div id="featured"></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
+      <ol class="manifest" id="manifest"></ol>
     </div>
+  </section>
 
-    <div class="exp-card">
-      <div class="exp-header">
+  <section class="block" id="about">
+    <div class="wrap">
+      <div class="sec-head">
         <div>
-          <div class="exp-title">Stocker / Attendant</div>
-          <div class="exp-org">Great Scotts Gas Station · Boise, ID</div>
+          <div class="label" style="color:var(--red)">02</div>
+          <h2>About</h2>
         </div>
-        <div class="exp-period">Mar 2024 – Oct 2024</div>
       </div>
-      <ul class="exp-bullets">
-        <li>Performed routine maintenance of store infrastructure and facilities</li>
-        <li>Managed product inventory across multiple brands, suppliers, and distribution channels</li>
-      </ul>
+      <div class="about-top">
+        <p class="pull">I design 3D printers from scratch. <span>Next up: printing parts for space.</span></p>
+        <div class="about-copy">
+          <p>I'm a high school student in Boise, and I'm also working on an associate's degree in applied math at Boise State. Most of my time goes into mechanical engineering, especially additive manufacturing.</p>
+          <p>So far that's meant hybrid delta printers, a composite fiber winder, and high-power rockets. I put everything on GitHub so anyone can learn from it or build on it.</p>
+          <p>SUNLU Filament sponsors me and has supplied the filament for several of these builds. I've also gotten grants from Hack Club's Blueprint and Highway programs, and sponsorships from Polymaker, Fysetc, and Siraya Tech.</p>
+          <p>Long term, I want to bring 3D printing into aerospace: winding my own motor casings, printing flight hardware, and eventually getting something to space.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>7+</b><span class="label">Open-source projects</span></div>
+        <div class="stat"><b>24★</b><span class="label">GitHub stars</span></div>
+        <div class="stat"><b>5+</b><span class="label">Sponsors &amp; grants</span></div>
+        <div class="stat"><b>100km</b><span class="label">Target altitude</span></div>
+      </div>
+      <div class="skills" id="skills"></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- CONTACT -->
-<section id="contact" class="section-pad">
-  <div class="section-header reveal">
-    <span class="section-num">04</span>
-    <h2 class="section-title">Contact</h2>
-  </div>
-
-  <div class="contact-grid">
-    <div class="contact-intro reveal">
-      <p>Interested in <strong>collaboration, sponsorship, or just want to talk shop</strong> about 3D printing or rocketry? Reach out — I'm always happy to connect with people who are building things.</p>
+  <section class="block" id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="label" style="color:var(--red)">03</div>
+          <h2>Experience</h2>
+        </div>
+      </div>
+      <div class="log" id="log"></div>
     </div>
+  </section>
 
-    <div class="contact-links reveal">
-      <a href="mailto:parkerrupe42@gmail.com" class="contact-link">
+  <section class="block contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head">
         <div>
-          <div class="contact-link-label">Email</div>
-          <div class="contact-link-value">parkerrupe42@gmail.com</div>
+          <div class="label">04</div>
+          <h2>Say hi</h2>
         </div>
-        <span class="contact-arrow">↗</span>
-      </a>
-      <a href="https://github.com/ProgrammerTurtle" target="_blank" rel="noopener" class="contact-link">
-        <div>
-          <div class="contact-link-label">GitHub</div>
-          <div class="contact-link-value">github.com/ProgrammerTurtle</div>
-        </div>
-        <span class="contact-arrow">↗</span>
-      </a>
-      <a href="https://www.instagram.com/parker_rupe" target="_blank" rel="noopener" class="contact-link">
-        <div>
-          <div class="contact-link-label">Instagram</div>
-          <div class="contact-link-value">@parker_rupe</div>
-        </div>
-        <span class="contact-arrow">↗</span>
-      </a>
-      <a href="https://ko-fi.com/turtlegod" target="_blank" rel="noopener" class="contact-link">
-        <div>
-          <div class="contact-link-label">Ko-fi / Support</div>
-          <div class="contact-link-value">ko-fi.com/turtlegod</div>
-        </div>
-        <span class="contact-arrow">↗</span>
-      </a>
-      <a href="parker-rupe-resume.pdf" target="_blank" class="contact-link">
-        <div>
-          <div class="contact-link-label">Résumé</div>
-          <div class="contact-link-value">Download PDF ↓</div>
-        </div>
-        <span class="contact-arrow">↗</span>
-      </a>
+        <p>Want to collaborate, sponsor a build, or just talk printers and rockets? Email is the best way to reach me.</p>
+      </div>
+      <a class="big-mail" href="mailto:parkerrupe42@gmail.com">parkerrupe42@gmail.com</a>
+      <div class="channels" id="channels"></div>
     </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <footer>
-  <div class="footer-name">Parker Rupe</div>
-  <div class="footer-right">Aspiring Mechanical Engineer · Open Source Builder</div>
+  <div class="bands" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <span class="label">© <span id="year"></span> Parker Rupe</span>
+    <span class="label">Built in Boise, Idaho · Headings in <a href="fonts/Neometric-LICENSE.txt">Neometric</a> by Andres Sanchez</span>
+  </div>
 </footer>
 
 <script>
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+/* =========================================================
+   CONTENT: edit these to update the site.
+   cat: "printer" | "rocketry" | "composites"
+   ========================================================= */
+const GH = "https://github.com/ProgrammerTurtle/";
+
+const projects = [
+  {
+    name: "DoNotDelta", cat: "printer", kicker: "3D printer · Novel kinematics",
+    featured: true, flag: "Shown at Open Sauce 2025",
+    blurb: "The first colinear delta ever built. It combines regular delta and quantum delta motion, so the hotend and the bed each move on their own set of delta arms.",
+    detail: "Stiff 2040 frame, 0.9° steppers, remote CPAP part cooling, and RepRapFirmware running on board with Ethernet.",
+    chips: ["Open source", "RepRapFirmware", "★ 24 stars"],
+    href: GH + "DoNotDelta"
+  },
+  {
+    name: "Quantumania", cat: "printer", kicker: "3D printer · High speed",
+    blurb: "A quantum delta built to go fast. Carbon fiber arms and custom composite parts keep the whole moving assembly under 120 g. It runs a direct-drive BoomBox extruder, AWD motion, MGN12C rails, and three 124 CFM fans.",
+    note: "Sponsored by Polymaker, Siraya Tech, Fysetc, and Hack Club.",
+    chips: ["<120 g moving mass", "RepRapFirmware", "Hack Club Highway"],
+    href: GH + "Quantumania"
+  },
+  {
+    name: "Charlotte CNC Winder", cat: "composites", kicker: "Composite manufacturing",
+    blurb: "A 3-axis CNC machine that winds carbon fiber, fiberglass, and basalt into tubes for rocket bodies and motor casings. Its 60″ × 10″ working area is the largest of any open-source winder. The axes run on Omegadrive, a belt drive I designed for it.",
+    chips: ["60″ × 10″", "Marlin", "Hack Club Blueprint"],
+    href: GH + "CharlotteCNCWinder"
+  },
+  {
+    name: "BECCA", cat: "rocketry", kicker: "High power rocketry · L1",
+    blurb: "My L1 certification rocket (Big Engine Certification Completion Attempt). It's 5 feet tall, flies on an Aerotech I500, and is aiming for Mach 0.8 and about a mile up. Dual-deploy parachutes bring it down, and a GPS tracker I built from a Particle Boron and an Adafruit Ultimate GPS helps me find it.",
+    chips: ["5 ft · 3″ dia", "Mach 0.8", "Custom GPS avionics"],
+    href: GH + "BECCA"
+  },
+  {
+    name: "Spaceshot Camera", cat: "rocketry", kicker: "Rocketry · Electronics",
+    blurb: "A camera module for a 3″ rocket meant to go past the Kármán line, 100 km up. It has to survive Mach 6+, so it pairs an off-the-shelf camera with my own LoRaWAN control board and machined mounts and shrouding.",
+    chips: ["Mach 6+", "100 km rated", "LoRaWAN PCB"],
+    href: GH + "CameraModule"
+  },
+  {
+    name: "RFP Toolhead", cat: "printer", kicker: "3D printer · Toolhead",
+    blurb: "A cartesian toolhead where the cooling duct and heatsink are one piece of SLM-printed aluminum, shaped with airflow in mind. It uses an Orbiter 1.5 extruder and a BTT Eddy Duo Z probe. I designed it in under 48 hours for Hack Club Rework.",
+    chips: ["SLM aluminum", "CFD-informed", "MIT license"],
+    href: GH + "RFPToolhead"
+  },
+  {
+    name: "ChubY Axis", cat: "printer", kicker: "3D printer · Hardware mod",
+    blurb: "A wildly overbuilt Y-axis for the Ender 3: a 4040 base, 3090 extrusion for the Y, dual MGN12H rails, AWD, and a lot of bracing. The chunkiness is the point. Built in about 12 hours for Hack Club Rework.",
+    chips: ["4040 frame", "Dual MGN12H", "AWD"],
+    href: GH + "ChubYAxis"
+  },
+  {
+    name: "Sounding Rocket", cat: "rocketry", kicker: "Amateur rocketry", wip: true,
+    blurb: "A fully custom amateur sounding rocket I'm building now. The repo is coming soon.",
+    chips: ["In progress"]
+  }
+];
+
+const skills = [
+  ["CAD", ["Fusion 360", "Onshape", "SolidWorks", "Inventor"]],
+  ["Analysis", ["Autodesk CFD", "FEA / CAE"]],
+  ["Making", ["FDM printing", "CNC machining", "Composite layup", "Filament winding"]],
+  ["Electronics & code", ["PCB design (EasyEDA)", "Python", "G-code", "Firmware"]]
+];
+
+const experience = [
+  {
+    role: "Hack Club Organizer", org: "Hack Club · International", when: "Mar 2025 – Present",
+    points: [
+      "Helped write the hardware guidelines Hack Club now uses across its programs",
+      "Set up standard procedures for handling participants' hardware projects",
+      "Reviewed hardware projects for grant eligibility and helped decide what gets funded",
+      "Helped spread the word about Hack Club to teens in 119+ countries"
+    ]
+  },
+  {
+    role: "Stocker / Attendant", org: "Great Scotts Gas Station · Boise, ID", when: "Mar 2024 – Oct 2024",
+    points: [
+      "Kept the store and its facilities in good shape",
+      "Managed inventory across multiple brands, suppliers, and distributors"
+    ]
+  }
+];
+
+const channels = [
+  ["GitHub", "ProgrammerTurtle", "https://github.com/ProgrammerTurtle"],
+  ["Instagram", "@parker_rupe", "https://www.instagram.com/parker_rupe"],
+  ["Ko-fi", "turtlegod", "https://ko-fi.com/turtlegod"],
+  ["Résumé", "PDF ↓", "parker-rupe-resume.pdf"]
+];
+
+/* ========================================================= */
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const chipList = chips => `<ul class="chips">${chips.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`;
+const catLabel = { printer: "3D printers", rocketry: "Rocketry", composites: "Composites" };
+const ext = href => href.startsWith("http") ? ` target="_blank" rel="noopener"` : "";
+
+const feat = projects.find(p => p.featured);
+document.getElementById("featured").innerHTML = `
+  <article class="featured">
+    <div class="featured-art">${deltaSchematic()}<span class="label">Fig. 1: colinear delta, schematic</span></div>
+    <div class="featured-body">
+      <span class="label flag">${esc(feat.flag)}</span>
+      <span class="label kicker">${esc(feat.kicker)}</span>
+      <h3>${esc(feat.name)}</h3>
+      <p>${esc(feat.blurb)}</p>
+      <p class="detail">${esc(feat.detail)}</p>
+      ${chipList(feat.chips)}
+      <div class="go"><a class="btn" href="${feat.href}"${ext(feat.href)}>View the repo ↗</a></div>
+    </div>
+  </article>`;
+
+const rest = projects.filter(p => !p.featured);
+document.getElementById("manifest").innerHTML = rest.map((p, i) => {
+  const tag = p.href ? "a" : "div";
+  const attrs = p.href ? ` href="${p.href}"${ext(p.href)}` : "";
+  return `<li><${tag} class="row${p.wip ? " wip" : ""}" data-cat="${p.cat}"${attrs}>
+    <span class="no">${String(i + 2).padStart(2, "0")}</span>
+    <div><span class="cat">${esc(p.kicker)}</span><h3>${esc(p.name)}</h3></div>
+    <div class="desc">
+      <p>${esc(p.blurb)}</p>
+      ${p.note ? `<p class="note">${esc(p.note)}</p>` : ""}
+      ${chipList(p.chips)}
+    </div>
+    <span class="arrow" aria-hidden="true">${p.href ? "↗" : "soon"}</span>
+  </${tag}></li>`;
+}).join("");
+
+const cats = ["all", ...new Set(rest.map(p => p.cat))];
+const filters = document.getElementById("filters");
+filters.innerHTML = cats.map(c => {
+  const n = c === "all" ? rest.length : rest.filter(p => p.cat === c).length;
+  return `<button type="button" data-f="${c}" aria-pressed="${c === "all"}">${c === "all" ? "All" : catLabel[c]}<span class="n">${n}</span></button>`;
+}).join("");
+filters.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filters.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  document.querySelectorAll("#manifest > li").forEach(li => {
+    const cat = li.firstElementChild.dataset.cat;
+    li.classList.toggle("hidden", b.dataset.f !== "all" && cat !== b.dataset.f);
+  });
+});
+
+document.getElementById("skills").innerHTML = skills.map(([k, list]) =>
+  `<div><h3>${esc(k)}</h3><ul>${list.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`).join("");
+
+document.getElementById("log").innerHTML = experience.map(x => `
+  <div class="log-entry">
+    <div class="label log-when">${esc(x.when)}</div>
+    <div>
+      <h3>${esc(x.role)}</h3>
+      <div class="label org">${esc(x.org)}</div>
+      <ul>${x.points.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+    </div>
+  </div>`).join("");
+
+document.getElementById("channels").innerHTML = channels.map(([label, val, href]) =>
+  `<a class="channel" href="${href}"${ext(href)}><span class="label">${esc(label)}</span><b>${esc(val)}</b></a>`).join("");
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// Line drawing of a delta with a moving bed. Illustrative, not to scale.
+function deltaSchematic() {
+  const bone = "#ebe7df", gold = "#f2a900", orange = "#ea6d23", red = "#cf3a20", bg = "#1a1715";
+  return `<svg viewBox="0 0 320 340" fill="none" stroke="${bone}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="30" y="16" width="260" height="16" rx="8"/>
+    <rect x="30" y="308" width="260" height="16" rx="8"/>
+    <line x1="46" y1="32" x2="46" y2="308"/><line x1="160" y1="32" x2="160" y2="308" stroke-dasharray="3 7" opacity=".5"/><line x1="274" y1="32" x2="274" y2="308"/>
+    <rect x="37" y="70" width="18" height="24" rx="4" fill="${bg}"/><rect x="265" y="84" width="18" height="24" rx="4" fill="${bg}"/><rect x="151" y="60" width="18" height="24" rx="4" fill="${bg}" opacity=".7"/>
+    <line x1="55" y1="84" x2="144" y2="148" stroke="${gold}" stroke-width="3"/><line x1="265" y1="98" x2="176" y2="148" stroke="${gold}" stroke-width="3"/><line x1="160" y1="84" x2="160" y2="142" stroke="${gold}" stroke-width="3" opacity=".7"/>
+    <rect x="138" y="142" width="44" height="16" rx="6" fill="${red}" stroke="${red}"/>
+    <path d="M153 158 L160 173 L167 158" stroke="${red}"/>
+    <rect x="37" y="236" width="18" height="24" rx="4" fill="${bg}"/><rect x="265" y="224" width="18" height="24" rx="4" fill="${bg}"/>
+    <line x1="55" y1="246" x2="112" y2="207" stroke="${orange}" stroke-width="3"/><line x1="265" y1="234" x2="208" y2="207" stroke="${orange}" stroke-width="3"/>
+    <rect x="94" y="196" width="132" height="12" rx="6" fill="${orange}" stroke="${orange}"/>
+    <path d="M300 160 v-30 m-5 5 l5 -5 l5 5" stroke-width="2" opacity=".6"/>
+    <path d="M300 194 v30 m-5 -5 l5 5 l5 -5" stroke-width="2" opacity=".6"/>
+  </svg>`;
+}
 </script>
 </body>
 </html>
