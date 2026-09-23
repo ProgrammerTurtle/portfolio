@@ -1,20 +1,20 @@
 ---
 import { channels, EMAIL } from '../data/site';
-const external = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {});
+import Icon from './Icon.astro';
+import NewTab from './NewTab.astro';
+import SectionHead from './SectionHead.astro';
 ---
 <section class="block contact" id="contact">
   <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <div class="label">04</div>
-        <h2>Say hi</h2>
-      </div>
+    <SectionHead title="Say hi" track={false}>
       <p>Want to collaborate, sponsor a build, or just talk printers and rockets? Email is the best way to reach me.</p>
-    </div>
+    </SectionHead>
     <a class="big-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
     <div class="channels">
       {channels.map((c) => (
-        <a class="channel" href={c.href} {...external(c.href)}><span class="label">{c.label}</span><b>{c.value}</b></a>
+        <a class="channel" href={c.href} target="_blank" rel="noopener">
+          <span>{c.label}</span><b>{c.value}<Icon name="arrow-up-right" /></b><NewTab />
+        </a>
       ))}
     </div>
   </div>

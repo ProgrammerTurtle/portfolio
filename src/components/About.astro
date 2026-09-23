@@ -1,14 +1,10 @@
 ---
-import { stats, skills } from '../data/site';
+import { skills } from '../data/site';
+import SectionHead from './SectionHead.astro';
 ---
 <section class="block" id="about">
   <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <div class="label" style="color:var(--red)">02</div>
-        <h2>About</h2>
-      </div>
-    </div>
+    <SectionHead title="About" />
     <div class="about-top">
       <p class="pull">I design 3D printers from scratch. <span>Next up: printing parts for space.</span></p>
       <div class="about-copy">
@@ -18,13 +14,10 @@ import { stats, skills } from '../data/site';
         <p>Long term, I want to bring 3D printing into aerospace: winding my own motor casings, printing flight hardware, and eventually getting something to space.</p>
       </div>
     </div>
-    <div class="stats">
-      {stats.map((s) => <div class="stat"><b>{s.value}</b><span class="label">{s.label}</span></div>)}
-    </div>
-    <div class="skills">
+    <dl class="skills">
       {skills.map(([group, list]) => (
-        <div><h3>{group}</h3><ul>{list.map((s) => <li>{s}</li>)}</ul></div>
+        <div><dt>{group}</dt><dd>{list.join(', ')}</dd></div>
       ))}
-    </div>
+    </dl>
   </div>
 </section>

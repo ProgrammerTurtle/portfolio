@@ -8,12 +8,7 @@ export const facts = [
   { label: 'Shown at', value: 'Open Sauce 2025 & 2026, San Francisco' },
   { label: 'Sponsored by', value: 'SUNLU Filament' },
   { label: 'Studying', value: 'Applied Mathematics, Boise State' },
-];
-
-export const stats = [
-  { value: '8', label: 'Open-source projects' },
-  { value: '60★', label: 'GitHub stars' },
-  { value: '5+', label: 'Sponsors & grants' },
+  { label: 'On GitHub', value: '8 open-source projects, 60 stars' },
 ];
 
 export const skills: [string, string[]][] = [
@@ -50,5 +45,5 @@ export const channels = [
   { label: 'GitHub', value: 'ProgrammerTurtle', href: GITHUB },
   { label: 'Instagram', value: '@parker_rupe', href: 'https://www.instagram.com/parker_rupe' },
   { label: 'Ko-fi', value: 'turtlegod', href: 'https://ko-fi.com/turtlegod' },
-  { label: 'Résumé', value: 'PDF ↓', href: RESUME },
+  { label: 'Résumé', value: 'PDF', href: RESUME },
 ];

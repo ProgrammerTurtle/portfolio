@@ -1,0 +1,12 @@
+---
+// Section heading. `track` draws the hero's four bands dropping in from the top edge and turning into the heading.
+interface Props { title: string; track?: boolean }
+const { title, track = true } = Astro.props;
+---
+<div class="sec-head">
+  <div class="sec-title">
+    {track && <div class="track" aria-hidden="true"><i></i><i></i><i></i><i></i></div>}
+    <h2>{title}</h2>
+  </div>
+  <slot />
+</div>

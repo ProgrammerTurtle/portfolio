@@ -1,16 +1,17 @@
 ---
 import { RESUME } from '../data/site';
+import Icon from './Icon.astro';
+import NewTab from './NewTab.astro';
 ---
-<section class="hero">
+<section class="hero" id="top">
   <div class="stripes" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="wrap hero-inner">
-    <div class="label">Mechanical engineering · Additive manufacturing · Rocketry</div>
     <h1>Parker<br />Rupe</h1>
     <div class="hero-row">
       <p class="hero-lede">I'm a high schooler in Boise who designs <b>3D printers, composite winders, and rockets</b> from scratch, and open-sources all of it.</p>
       <div class="hero-ctas">
         <a class="btn" href="#projects">See projects</a>
-        <a class="btn ghost" href={RESUME} target="_blank" rel="noopener">Résumé ↗</a>
+        <a class="btn ghost" href={RESUME} target="_blank" rel="noopener">Résumé <Icon name="arrow-up-right" /><NewTab /></a>
       </div>
     </div>
   </div>

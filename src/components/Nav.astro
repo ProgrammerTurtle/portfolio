@@ -1,15 +1,17 @@
 ---
 import { RESUME } from '../data/site';
+import NewTab from './NewTab.astro';
 ---
+<a class="skip" href="#main">Skip to content</a>
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#top">parker rupe<span>.</span></a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Sections">
       <a href="#projects">Projects</a>
       <a href="#about">About</a>
-      <a href="#experience">Experience</a>
+      <a class="nav-exp" href="#experience">Experience</a>
       <a href="#contact">Contact</a>
-      <a class="btn small" href={RESUME} target="_blank" rel="noopener">Résumé</a>
+      <a class="btn small nav-resume" href={RESUME} target="_blank" rel="noopener">Résumé<NewTab /></a>
     </nav>
   </div>
 </header>

@@ -2,6 +2,9 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Chips from './Chips.astro';
+import Icon from './Icon.astro';
+import NewTab from './NewTab.astro';
+import SectionHead from './SectionHead.astro';
 import { GITHUB } from '../data/site';
 
 const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -9,21 +12,14 @@ const featured = all.find((p) => p.data.featured);
 const rest = all.filter((p) => !p.data.featured);
 const repoUrl = (repo?: string) => (repo ? `${GITHUB}/${repo}` : undefined);
 
-const catLabel = { printer: '3D printers', rocketry: 'Rocketry', composites: 'Composites' } as const;
-const cats = [...new Set(rest.map((p) => p.data.cat))];
-
 const FeaturedBody = featured ? (await render(featured)).Content : null;
 const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await render(p)).Content })));
 ---
 <section class="block dark" id="projects">
   <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <div class="label">01</div>
-        <h2>Projects</h2>
-      </div>
+    <SectionHead title="Projects">
       <p>Everything here is open source. Each project links to its GitHub repo.</p>
-    </div>
+    </SectionHead>
 
     {featured && FeaturedBody && (
       <article class="featured">
@@ -31,56 +27,49 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
           {featured.data.image && (
             <Image src={featured.data.image} alt={featured.data.imageAlt ?? featured.data.name} widths={[640, 960, 1300]} sizes="(max-width: 880px) 100vw, 620px" />
           )}
-          <span class="label">{featured.data.name}, up close</span>
+          {featured.data.flag && <span class="badge">{featured.data.flag}</span>}
         </div>
         <div class="featured-body">
-          {featured.data.flag && <span class="label flag">{featured.data.flag}</span>}
-          <span class="label kicker">{featured.data.kicker}</span>
           <h3>{featured.data.name}</h3>
+          <p class="sub">{featured.data.kicker}</p>
           <FeaturedBody />
           {featured.data.detail && <p class="detail">{featured.data.detail}</p>}
           <Chips chips={featured.data.chips} />
           {featured.data.repo && (
-            <div class="go"><a class="btn" href={repoUrl(featured.data.repo)} target="_blank" rel="noopener">View the repo ↗</a></div>
+            <div class="go">
+              <a class="btn" href={repoUrl(featured.data.repo)} target="_blank" rel="noopener">View the repo <Icon name="arrow-up-right" /><NewTab /></a>
+            </div>
           )}
         </div>
       </article>
     )}
 
-    <div class="filters" id="filters" role="group" aria-label="Filter projects">
-      <button type="button" data-f="all" aria-pressed="true">All<span class="n">{rest.length}</span></button>
-      {cats.map((c) => (
-        <button type="button" data-f={c} aria-pressed="false">{catLabel[c]}<span class="n">{rest.filter((p) => p.data.cat === c).length}</span></button>
-      ))}
-    </div>
-
-    <ol class="manifest" id="manifest">
-      {rows.map(({ p, Content }, i) => (
-        <li data-cat={p.data.cat}>
-          <a class="row" data-cat={p.data.cat} href={repoUrl(p.data.repo)} target="_blank" rel="noopener">
-            <span class="no">{String(i + 2).padStart(2, '0')}</span>
-            <div><span class="cat">{p.data.kicker}</span><h3>{p.data.name}</h3></div>
-            <div class="desc">
-              <Content />
-              {p.data.note && <p class="note">{p.data.note}</p>}
-              <Chips chips={p.data.chips} />
+    <ul class="manifest">
+      {rows.map(({ p, Content }) => (
+        <li class="row" data-cat={p.data.cat}>
+          {p.data.image ? (
+            <div class="thumb">
+              <Image src={p.data.image} alt="" widths={[360, 720]} sizes="(max-width: 860px) 100vw, 200px" />
             </div>
-            <span class="arrow" aria-hidden="true">↗</span>
-          </a>
+          ) : (
+            <div class="thumb empty">Photo coming soon</div>
+          )}
+          <div>
+            <h3>
+              {p.data.repo ? (
+                <a href={repoUrl(p.data.repo)} target="_blank" rel="noopener">{p.data.name}<Icon name="arrow-up-right" /><span class="sr-only">, GitHub repo</span><NewTab /></a>
+              ) : p.data.name}
+            </h3>
+            <p class="sub">{p.data.kicker}</p>
+          </div>
+          <div class="desc">
+            <Content />
+            {p.data.note && <p class="note">{p.data.note}</p>}
+            <Chips chips={p.data.chips} />
+          </div>
+          <span class="arrow" aria-hidden="true"><Icon name="arrow-up-right" /></span>
         </li>
       ))}
-    </ol>
+    </ul>
   </div>
 </section>
-
-<script>
-  const filters = document.getElementById('filters');
-  filters?.addEventListener('click', (e) => {
-    const b = (e.target as HTMLElement).closest('button');
-    if (!b) return;
-    filters.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    document.querySelectorAll<HTMLElement>('#manifest > li').forEach((li) => {
-      li.classList.toggle('hidden', b.dataset.f !== 'all' && li.dataset.cat !== b.dataset.f);
-    });
-  });
-</script>

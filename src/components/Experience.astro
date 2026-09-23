@@ -1,21 +1,17 @@
 ---
 import { experience } from '../data/site';
+import SectionHead from './SectionHead.astro';
 ---
 <section class="block" id="experience">
   <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <div class="label" style="color:var(--red)">03</div>
-        <h2>Experience</h2>
-      </div>
-    </div>
+    <SectionHead title="Experience" />
     <div class="log">
       {experience.map((x) => (
         <div class="log-entry">
-          <div class="label log-when">{x.when}</div>
+          <div class="mono log-when">{x.when}</div>
           <div>
             <h3>{x.role}</h3>
-            <div class="label org">{x.org}</div>
+            <p class="org">{x.org}</p>
             <ul>{x.points.map((p) => <li>{p}</li>)}</ul>
           </div>
         </div>
