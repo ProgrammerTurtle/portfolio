@@ -1,0 +1,21 @@
+---
+import { channels, EMAIL } from '../data/site';
+const external = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {});
+---
+<section class="block contact" id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="label">04</div>
+        <h2>Say hi</h2>
+      </div>
+      <p>Want to collaborate, sponsor a build, or just talk printers and rockets? Email is the best way to reach me.</p>
+    </div>
+    <a class="big-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+    <div class="channels">
+      {channels.map((c) => (
+        <a class="channel" href={c.href} {...external(c.href)}><span class="label">{c.label}</span><b>{c.value}</b></a>
+      ))}
+    </div>
+  </div>
+</section>

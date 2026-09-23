@@ -1,0 +1,30 @@
+---
+import { stats, skills } from '../data/site';
+---
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="label" style="color:var(--red)">02</div>
+        <h2>About</h2>
+      </div>
+    </div>
+    <div class="about-top">
+      <p class="pull">I design 3D printers from scratch. <span>Next up: printing parts for space.</span></p>
+      <div class="about-copy">
+        <p>I'm a high school student in Boise, and I'm also working on an associate's degree in applied math at Boise State. Most of my time goes into mechanical engineering, especially additive manufacturing.</p>
+        <p>So far that's meant hybrid delta printers, a composite fiber winder, and high-power rockets. I put everything on GitHub so anyone can learn from it or build on it.</p>
+        <p>SUNLU Filament sponsors me and has supplied the filament for several of these builds. I've also gotten grants from Hack Club's Blueprint and Highway programs, and sponsorships from Polymaker, Fysetc, and Siraya Tech.</p>
+        <p>Long term, I want to bring 3D printing into aerospace: winding my own motor casings, printing flight hardware, and eventually getting something to space.</p>
+      </div>
+    </div>
+    <div class="stats">
+      {stats.map((s) => <div class="stat"><b>{s.value}</b><span class="label">{s.label}</span></div>)}
+    </div>
+    <div class="skills">
+      {skills.map(([group, list]) => (
+        <div><h3>{group}</h3><ul>{list.map((s) => <li>{s}</li>)}</ul></div>
+      ))}
+    </div>
+  </div>
+</section>

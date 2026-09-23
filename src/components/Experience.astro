@@ -1,0 +1,25 @@
+---
+import { experience } from '../data/site';
+---
+<section class="block" id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="label" style="color:var(--red)">03</div>
+        <h2>Experience</h2>
+      </div>
+    </div>
+    <div class="log">
+      {experience.map((x) => (
+        <div class="log-entry">
+          <div class="label log-when">{x.when}</div>
+          <div>
+            <h3>{x.role}</h3>
+            <div class="label org">{x.org}</div>
+            <ul>{x.points.map((p) => <li>{p}</li>)}</ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
