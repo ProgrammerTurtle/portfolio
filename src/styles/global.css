@@ -126,9 +126,9 @@ section.block > .wrap, footer .wrap { padding-left: var(--rail-left); }
 .hero { position: relative; overflow: hidden; }
 .hero-inner {
   position: relative;
-  padding-top: clamp(40px, 7vw, 96px);
+  padding-top: clamp(32px, 5vw, 72px);
   padding-right: calc(var(--gutter) + 4 * clamp(10px, 1.7vw, 26px) + 24px);
-  padding-bottom: calc(clamp(24px, 4vw, 56px) + 4 * clamp(10px, 1.7vw, 26px) + clamp(40px, 6vw, 80px));
+  padding-bottom: calc(clamp(24px, 4vw, 56px) + 4 * clamp(10px, 1.7vw, 26px) + clamp(28px, 3vw, 40px));
 }
 .hero h1 {
   font-family: var(--display); font-weight: 400;
@@ -147,11 +147,12 @@ section.block > .wrap, footer .wrap { padding-left: var(--rail-left); }
 
 /* ---------- facts strip ---------- */
 .facts { background: var(--ink); color: var(--bone); --focus: var(--gold); }
-.facts .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+.facts .wrap { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 0; margin-bottom: 0; }
 .fact { padding: 28px 24px 30px; border-left: 1px solid rgba(235,231,223,.16); }
 .fact:first-child { border-left: 0; padding-left: 0; }
-.fact span { display: block; font-size: 14px; font-weight: 500; color: var(--gold); }
-.fact b { display: block; margin-top: 6px; font-family: var(--display); font-weight: 400; font-size: clamp(19px, 1.8vw, 24px); line-height: 1.2; }
+.fact dt { font-size: 14px; font-weight: 500; color: var(--gold); }
+.fact dd { margin: 6px 0 0; font-family: var(--display); font-size: clamp(19px, 1.8vw, 24px); line-height: 1.25; }
+.fact dd.plain { font-family: var(--body); font-weight: 600; font-size: clamp(18px, 1.6vw, 22px); letter-spacing: .01em; }
 @media (max-width: 900px) {
   .facts .wrap { grid-template-columns: 1fr 1fr; }
   .fact { border-left: 0; padding: 20px 16px 20px 0; }
@@ -181,7 +182,11 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 }
 .rail.origin i, .rail.turn i { width: auto; right: 0; background: none; border: 0 solid var(--band); }
 .rail.origin i { top: calc(var(--k) * var(--tw)); border-width: var(--tw) 0 0 var(--tw); border-top-left-radius: calc(var(--tR) - var(--k) * var(--tw)); }
-.rail.turn { position: relative; top: auto; bottom: auto; width: auto; height: calc(var(--tR) + 12px); }
+.rail.turn {
+  position: relative; top: auto; bottom: auto; width: auto; z-index: 1;
+  height: calc(var(--tR) + 12px);
+  margin-top: calc(4 * var(--tw) - var(--tR) - 12px); /* the bend sits over the contact block, not on black */
+}
 .rail.turn i { bottom: calc(var(--k) * var(--tw)); border-width: 0 0 var(--tw) var(--tw); border-bottom-left-radius: calc(var(--tR) - var(--k) * var(--tw)); }
 
 /* ---------- projects (dark) ---------- */
@@ -195,9 +200,9 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
   margin-bottom: clamp(48px, 6vw, 72px);
 }
 .featured-art { position: relative; min-height: 440px; background: #1a1715; }
-.featured-art a { position: absolute; inset: 0; }
 .featured-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s cubic-bezier(.2,.7,.2,1); }
-.featured-art a:hover img { transform: scale(1.03); }
+.art-link { position: absolute; inset: 0; }
+.featured-art:has(.art-link:hover) img { transform: scale(1.03); }
 .badge {
   position: absolute; left: 16px; bottom: 16px;
   background: var(--gold); color: var(--ink);
@@ -220,71 +225,79 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
 .chips li { font-family: var(--mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid currentColor; opacity: .85; }
 
+/* Phones: compact rows, photo beside the title. Wider: an equal two-column card grid. */
 .manifest { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(235,231,223,.18); }
 .row {
   --c: var(--orange);
-  display: grid; gap: 6px 28px; align-items: start;
-  grid-template-columns: clamp(150px, 16vw, 200px) minmax(0, 1fr) auto;
-  grid-template-areas: "thumb head repo" "thumb body repo";
-  padding: 26px 0;
+  display: grid; gap: 12px 16px; align-items: start;
+  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-areas: "thumb head" "body body" "repo repo";
+  padding: 22px 0;
   border-bottom: 1px solid rgba(235,231,223,.18);
   color: var(--bone);
 }
 .row[data-cat="rocketry"] { --c: var(--gold); }
 .row[data-cat="composites"] { --c: var(--red-bright); }
-.row .head { grid-area: head; }
-.row .body { grid-area: body; max-width: 62ch; }
+.row .head { grid-area: head; align-self: center; }
+.row .body { grid-area: body; }
 .row h3 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 3vw, 40px); line-height: 1; letter-spacing: -.02em; margin: 0 0 8px; transition: color .18s; }
 .row .sub { font-size: 15px; font-weight: 500; color: var(--c); margin: 0; }
-.row .summary { margin: 4px 0 14px; font-size: 17px; color: #d8d2c7; }
+.row .summary { margin: 0 0 14px; font-size: 17px; color: #d8d2c7; }
 .row .more-body p { margin: 0 0 12px; font-size: 16px; color: #b8b1a6; }
 .row .note { font-size: 15px; font-style: italic; }
 
-/* Only what links lights up: the photo and the GitHub button, together. */
 .thumb {
-  grid-area: thumb; align-self: center;
-  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden;
-  border-radius: 16px; background: #1d1a17; transition: background .18s;
+  grid-area: thumb; position: relative; aspect-ratio: 1; overflow: hidden;
+  border-radius: 14px; background: #1d1a17; transition: background .18s;
 }
-.thumb img { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); object-fit: contain; }
-.row:has(.thumb:not(.tile):hover, .repo:hover, .repo:focus-visible) .thumb:not(.tile) { background: var(--c); }
-.row:has(.thumb:hover, .repo:hover, .repo:focus-visible) h3 { color: var(--c); }
+.thumb img { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); object-fit: contain; }
+.thumb-link { position: absolute; inset: 0; border-radius: inherit; }
+
+/* The photo and the GitHub button are the two links; hovering either lights both. */
+.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .thumb:not(.tile) { background: var(--c); }
+.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) h3 { color: var(--c); }
+.row:has(.thumb-link:hover) .repo, .repo:hover, .repo:focus-visible { background: var(--c); border-color: var(--c); color: var(--ink); }
+.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .tile b { color: var(--bone); }
 
 /* No photo yet: the project's headline number on a small version of the hero bend. */
-.tile { container-type: inline-size; padding: 7% 9%; } /* % of the column; cqi here would resolve against the viewport */
-.tile b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(18px, 20cqi, 44px); line-height: 1; letter-spacing: -.02em; color: var(--c); }
-.tile span { display: block; margin-top: 4px; font-size: clamp(11px, 7cqi, 14px); color: #b8b1a6; }
-.stripes.mini { --w: clamp(3px, 2.6cqi, 5px); --R: clamp(18px, 17cqi, 34px); --edge-b: 7cqi; --edge-r: 7cqi; }
+.tile > div { position: absolute; inset: 0; container-type: inline-size; padding: 7% 9%; }
+.tile b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(18px, 16cqi, 56px); line-height: 1; letter-spacing: -.02em; color: var(--c); transition: color .18s; }
+.tile span { display: block; margin-top: 4px; font-size: clamp(11px, 6cqi, 16px); color: #b8b1a6; }
+.stripes.mini { --w: clamp(3px, 2.4cqi, 7px); --R: clamp(18px, 16cqi, 60px); --edge-b: 7cqi; --edge-r: 7cqi; }
 
 .more summary {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; margin-top: 6px;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
   font-size: 15px; font-weight: 600; color: #b8b1a6; cursor: pointer; list-style: none;
 }
 .more summary::-webkit-details-marker { display: none; }
 .more summary:hover { color: var(--bone); }
 .more summary .icon { transition: transform .2s; }
+.more .opened, .more[open] .closed { display: none; }
+.more[open] .opened { display: inline; }
 .more[open] summary .icon { transform: rotate(180deg); }
-.more-body { padding-top: 8px; }
+.more-body { padding-top: 4px; }
 
 .repo {
-  grid-area: repo; align-self: center;
+  grid-area: repo; justify-self: start;
   display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
   min-height: 44px; padding: 8px 18px; border-radius: 999px;
   border: 1.5px solid rgba(235,231,223,.45); color: var(--bone);
   font-family: var(--display); font-size: 16px; text-decoration: none;
   transition: background .18s, color .18s, border-color .18s;
 }
-.repo:hover, .repo:focus-visible { background: var(--c); border-color: var(--c); color: var(--ink); }
-@media (max-width: 860px) {
+
+@media (min-width: 861px) {
+  .manifest { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: start; border-top: 0; }
   .row {
-    grid-template-columns: 96px minmax(0, 1fr); gap: 12px 16px; padding: 22px 0;
-    grid-template-areas: "thumb head" "body body" "repo repo";
+    display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    padding: 0 0 26px; border: 0; border-radius: 24px; overflow: hidden;
+    background: var(--ink-2);
   }
-  .thumb { aspect-ratio: 1; border-radius: 14px; }
-  .thumb img { inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
-  .row .head { align-self: center; }
-  .row .summary { margin-top: 0; }
-  .repo { justify-self: start; }
+  .thumb { aspect-ratio: 16 / 9; border-radius: 0; margin-bottom: 24px; }
+  .thumb img { inset: 7%; width: 86%; height: 86%; }
+  .row .head, .row .body { padding: 0 28px; }
+  .row .head { margin-bottom: 12px; }
+  .row .repo { margin: 10px 28px 0; }
 }
 
 /* ---------- about ---------- */

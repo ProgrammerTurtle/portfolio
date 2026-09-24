@@ -27,10 +27,10 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
       <article class="featured">
         <div class="featured-art">
           {featured.data.image && (
-            <a href={repoUrl(featured.data.repo)} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-              <Image src={featured.data.image} alt={featured.data.imageAlt ?? featured.data.name} widths={[640, 960, 1300]} sizes="(max-width: 880px) 100vw, 620px" />
-            </a>
+            <Image src={featured.data.image} alt={featured.data.imageAlt ?? featured.data.name} widths={[640, 960, 1300]} sizes="(max-width: 880px) 100vw, 620px" />
           )}
+          {/* Mouse shortcut to the repo; the button below is the real link, so this stays out of the tab order and the reading order. */}
+          <a class="art-link" href={repoUrl(featured.data.repo)} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"></a>
           {featured.data.flag && <span class="badge">{featured.data.flag}</span>}
         </div>
         <div class="featured-body">
@@ -53,18 +53,19 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
         const href = repoUrl(p.data.repo);
         return (
           <li class="row" data-cat={p.data.cat}>
-            {/* The photo is a mouse shortcut to the repo; the GitHub button is the real, focusable link. */}
-            <a class:list={['thumb', { tile: !p.data.image }]} href={href} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <div class:list={['thumb', { tile: !p.data.image }]}>
               {p.data.image ? (
-                <Image src={p.data.image} alt="" widths={[240, 480]} sizes="(max-width: 860px) 96px, 200px" />
+                <Image src={p.data.image} alt={p.data.imageAlt ?? ''} widths={[320, 640]} sizes="(max-width: 860px) 96px, 560px" />
               ) : p.data.tile && (
-                <>
+                <div aria-hidden="true">
                   <div class="stripes mini"><i></i><i></i><i></i><i></i></div>
                   <b>{p.data.tile.value}</b>
                   <span>{p.data.tile.label}</span>
-                </>
+                </div>
               )}
-            </a>
+              {/* Mouse shortcut to the repo; the GitHub button is the real, focusable link. */}
+              {href && <a class="thumb-link" href={href} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"></a>}
+            </div>
             <div class="head">
               <h3>{p.data.name}</h3>
               <p class="sub">{p.data.kicker}</p>
@@ -73,7 +74,7 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
               {p.data.summary && <p class="summary">{p.data.summary}</p>}
               <Chips chips={p.data.chips} />
               <details class="more">
-                <summary>More<span class="sr-only"> about {p.data.name}</span><Icon name="chevron-down" /></summary>
+                <summary><span class="closed">Details</span><span class="opened">Less</span><span class="sr-only"> about {p.data.name}</span><Icon name="chevron-down" /></summary>
                 <div class="more-body">
                   <Content />
                   {p.data.note && <p class="note">{p.data.note}</p>}

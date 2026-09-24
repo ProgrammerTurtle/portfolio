@@ -4,9 +4,10 @@ export const GITHUB = 'https://github.com/ProgrammerTurtle';
 export const EMAIL = 'parkerrupe42@gmail.com';
 export const RESUME = '/parker-rupe-resume.pdf';
 
-export const facts = [
+export const facts: { label: string; value: string; plain?: boolean }[] = [
   { label: 'Shown at', value: 'Open Sauce 2025 & 2026, San Francisco' },
-  { label: 'Sponsored by', value: 'SUNLU Filament' },
+  // Body font here: Neometric's N makes the all-caps brand read as "SU∩LU".
+  { label: 'Sponsored by', value: 'SUNLU Filament', plain: true },
   { label: 'Studying', value: 'Applied Mathematics, Boise State' },
   { label: 'On GitHub', value: '8 open-source projects, 60 stars' },
 ];

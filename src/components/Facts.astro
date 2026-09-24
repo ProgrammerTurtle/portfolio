@@ -2,7 +2,12 @@
 import { facts } from '../data/site';
 ---
 <div class="facts">
-  <div class="wrap">
-    {facts.map((f) => <div class="fact"><span>{f.label}</span><b>{f.value}</b></div>)}
-  </div>
+  <dl class="wrap">
+    {facts.map((f) => (
+      <div class="fact">
+        <dt>{f.label}</dt>
+        <dd class:list={{ plain: f.plain }}>{f.value}</dd>
+      </div>
+    ))}
+  </dl>
 </div>
