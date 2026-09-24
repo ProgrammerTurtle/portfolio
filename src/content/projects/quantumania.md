@@ -3,8 +3,9 @@ name: "Quantumania"
 order: 3
 cat: printer
 kicker: "3D printer · High speed"
+summary: "A quantum delta built for speed, with under 120 g of moving mass."
 note: "Sponsored by Polymaker, Siraya Tech, Fysetc, and Hack Club."
-chips: ["<120 g moving mass", "RepRapFirmware", "Hack Club Highway"]
+chips: ["RepRapFirmware", "Hack Club Highway", "AWD"]
 repo: "Quantumania"
 tile:
   value: "<120 g"

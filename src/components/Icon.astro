@@ -1,9 +1,10 @@
 ---
 // Drawn icons, one stroke weight. Decorative by default; pair with visible or sr-only text.
-interface Props { name: 'arrow-up-right' | 'arrow-down' }
+interface Props { name: 'arrow-up-right' | 'arrow-down' | 'chevron-down' }
 const { name } = Astro.props;
 ---
 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
   {name === 'arrow-up-right' && <path d="M7 17 17 7M9 7h8v8" />}
   {name === 'arrow-down' && <path d="M12 5v14M6 13l6 6 6-6" />}
+  {name === 'chevron-down' && <path d="M6 9l6 6 6-6" />}
 </svg>

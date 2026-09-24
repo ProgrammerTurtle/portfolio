@@ -3,6 +3,7 @@ name: "Charlotte CNC Winder"
 order: 4
 cat: composites
 kicker: "Composites · Filament winder"
+summary: "A CNC filament winder for carbon fiber rocket tubes, with the largest working area of any open-source winder."
 chips: ["60″ × 10″", "Marlin", "Hack Club Blueprint"]
 repo: "CharlotteCNCWinder"
 image: "../../assets/charlotte-cnc-winder.png"

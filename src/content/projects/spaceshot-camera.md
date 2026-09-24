@@ -3,6 +3,7 @@ name: "Spaceshot Camera"
 order: 6
 cat: rocketry
 kicker: "Rocketry · Flight electronics"
+summary: "A camera module built to survive Mach 6+ and keep working past the Kármán line."
 chips: ["Mach 6+", "100 km rated", "LoRaWAN PCB"]
 repo: "CameraModule"
 image: "../../assets/spaceshot-camera.png"

@@ -27,7 +27,9 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
       <article class="featured">
         <div class="featured-art">
           {featured.data.image && (
-            <Image src={featured.data.image} alt={featured.data.imageAlt ?? featured.data.name} widths={[640, 960, 1300]} sizes="(max-width: 880px) 100vw, 620px" />
+            <a href={repoUrl(featured.data.repo)} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+              <Image src={featured.data.image} alt={featured.data.imageAlt ?? featured.data.name} widths={[640, 960, 1300]} sizes="(max-width: 880px) 100vw, 620px" />
+            </a>
           )}
           {featured.data.flag && <span class="badge">{featured.data.flag}</span>}
         </div>
@@ -47,35 +49,45 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
     )}
 
     <ul class="manifest">
-      {rows.map(({ p, Content }) => (
-        <li class="row" data-cat={p.data.cat}>
-          {p.data.image ? (
-            <div class="thumb">
-              <Image src={p.data.image} alt="" widths={[360, 720]} sizes="(max-width: 860px) 100vw, 200px" />
-            </div>
-          ) : p.data.tile ? (
-            <div class="thumb tile">
-              <div class="stripes mini" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-              <b>{p.data.tile.value}</b>
-              <span>{p.data.tile.label}</span>
-            </div>
-          ) : <div />}
-          <div>
-            <h3>{p.data.name}</h3>
-            <p class="sub">{p.data.kicker}</p>
-          </div>
-          <div class="desc">
-            <Content />
-            {p.data.note && <p class="note">{p.data.note}</p>}
-            <Chips chips={p.data.chips} />
-          </div>
-          {p.data.repo && (
-            <a class="repo" href={repoUrl(p.data.repo)} target="_blank" rel="noopener">
-              GitHub <Icon name="arrow-up-right" /><span class="sr-only"> repo for {p.data.name}</span><NewTab />
+      {rows.map(({ p, Content }) => {
+        const href = repoUrl(p.data.repo);
+        return (
+          <li class="row" data-cat={p.data.cat}>
+            {/* The photo is a mouse shortcut to the repo; the GitHub button is the real, focusable link. */}
+            <a class:list={['thumb', { tile: !p.data.image }]} href={href} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+              {p.data.image ? (
+                <Image src={p.data.image} alt="" widths={[240, 480]} sizes="(max-width: 860px) 96px, 200px" />
+              ) : p.data.tile && (
+                <>
+                  <div class="stripes mini"><i></i><i></i><i></i><i></i></div>
+                  <b>{p.data.tile.value}</b>
+                  <span>{p.data.tile.label}</span>
+                </>
+              )}
             </a>
-          )}
-        </li>
-      ))}
+            <div class="head">
+              <h3>{p.data.name}</h3>
+              <p class="sub">{p.data.kicker}</p>
+            </div>
+            <div class="body">
+              {p.data.summary && <p class="summary">{p.data.summary}</p>}
+              <Chips chips={p.data.chips} />
+              <details class="more">
+                <summary>More<span class="sr-only"> about {p.data.name}</span><Icon name="chevron-down" /></summary>
+                <div class="more-body">
+                  <Content />
+                  {p.data.note && <p class="note">{p.data.note}</p>}
+                </div>
+              </details>
+            </div>
+            {href && (
+              <a class="repo" href={href} target="_blank" rel="noopener">
+                GitHub <Icon name="arrow-up-right" /><span class="sr-only"> repo for {p.data.name}</span><NewTab />
+              </a>
+            )}
+          </li>
+        );
+      })}
     </ul>
   </div>
 </section>

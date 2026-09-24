@@ -12,6 +12,7 @@ const projects = defineCollection({
       order: z.number(), // position in the list, lowest first
       cat: z.enum(['printer', 'rocketry', 'composites']),
       kicker: z.string(),
+      summary: z.string().optional(), // one line shown in the list; the body shows under "More"
       featured: z.boolean().default(false),
       flag: z.string().optional(),
       detail: z.string().optional(),

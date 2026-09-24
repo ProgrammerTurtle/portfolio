@@ -3,6 +3,7 @@ name: "ChubY Axis"
 order: 8
 cat: printer
 kicker: "3D printer · Hardware mod"
+summary: "A wildly overbuilt Y-axis for the Ender 3. The chunkiness is the point."
 chips: ["4040 frame", "Dual MGN12H", "AWD"]
 repo: "ChubYAxis"
 image: "../../assets/chuby-axis.png"

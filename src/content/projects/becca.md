@@ -3,6 +3,7 @@ name: "BECCA"
 order: 5
 cat: rocketry
 kicker: "Rocketry · L1 certification"
+summary: "My 5-foot L1 certification rocket, with dual-deploy recovery and a GPS tracker I built."
 chips: ["5 ft · 3″ dia", "Mach 0.8", "Custom GPS avionics"]
 repo: "BECCA"
 image: "../../assets/becca.png"
