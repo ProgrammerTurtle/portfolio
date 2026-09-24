@@ -1,6 +1,10 @@
 /* Neometric by Andres Sanchez, CC BY-NC-SA 3.0 (see fonts/Neometric-LICENSE.txt).
    It ships in one weight, so it covers every weight here instead of getting faux-bolded. */
 @font-face { font-family: "Neometric"; src: url("/fonts/Neometric-Medium.otf") format("opentype"); font-weight: 100 900; font-display: swap; }
+/* Characters Neometric doesn't ship, drawn to match (scripts/neometric-extras.mjs).
+   Declared second so the browser checks it first for these code points. */
+@font-face { font-family: "Neometric"; src: url("/fonts/Neometric-Extras.otf") format("opentype"); font-weight: 100 900; font-display: swap;
+  unicode-range: U+0022, U+0027, U+002B, U+002D, U+002F, U+003C, U+003E, U+0040, U+005F, U+00B0, U+00B7, U+00C9, U+00D7, U+00E1, U+00E9, U+02BC, U+2010, U+2011, U+2013, U+2014, U+2018, U+2019, U+2026, U+2032, U+2033; }
 
 :root {
   --bone: #ebe7df;
@@ -23,7 +27,15 @@
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1240px;
   --pad: clamp(72px, 10vw, 136px);
+  --h2: clamp(48px, 8vw, 96px);
   --focus: var(--ink);
+
+  /* The rail: four bands running down the left edge from the Projects heading to the footer. */
+  --tw: clamp(6px, 1.1vw, 14px);                         /* band width */
+  --tR: calc(4 * var(--tw) + clamp(8px, 1.2vw, 16px));   /* outer bend radius */
+  --tgap: clamp(10px, 1.8vw, 22px);                      /* space between rail and content */
+  --side: max(0px, calc((100vw - var(--max)) / 2));      /* page margin outside .wrap */
+  --rail-left: max(var(--gutter), calc(var(--tR) + var(--tgap) - var(--side)));
 }
 
 * { box-sizing: border-box; }
@@ -43,6 +55,9 @@ a { color: inherit; text-underline-offset: .18em; text-decoration-thickness: 1.5
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
 
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+/* Content clears the rail. On wider screens everything shares that left edge. */
+section.block > .wrap, footer .wrap { padding-left: var(--rail-left); }
+@media (min-width: 761px) { .wrap { padding-left: var(--rail-left); } }
 .mono { font-family: var(--mono); font-size: 13px; letter-spacing: .02em; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .icon { width: 1em; height: 1em; flex: none; }
@@ -60,13 +75,13 @@ a { color: inherit; text-underline-offset: .18em; text-decoration-thickness: 1.5
 .brand { font-family: var(--display); font-size: 22px; text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
 .brand span { color: var(--orange); }
 .nav-links { display: flex; align-items: center; gap: 30px; }
-.nav-links a:not(.btn) { font-size: 15px; font-weight: 500; text-decoration: none; }
+.nav-links a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 500; text-decoration: none; }
 .nav-links a:not(.btn):hover { color: var(--red-text); }
 @media (max-width: 760px) {
   .nav .wrap { height: 60px; }
   .brand { font-size: 19px; }
   .nav-links { gap: 18px; }
-  .nav-links .nav-exp { display: none; }
+  .nav-links a.nav-exp { display: none; }
 }
 @media (max-width: 480px) { .nav-links .nav-resume { display: none; } }
 
@@ -96,10 +111,10 @@ a { color: inherit; text-underline-offset: .18em; text-decoration-thickness: 1.5
   border-style: solid; border-width: 0 var(--w) var(--w) 0;
   border-bottom-right-radius: calc(var(--R) - var(--k) * var(--w));
 }
-.stripes i:nth-child(1), .track i:nth-child(1) { --k: 0; border-color: var(--brown); }
-.stripes i:nth-child(2), .track i:nth-child(2) { --k: 1; border-color: var(--red); }
-.stripes i:nth-child(3), .track i:nth-child(3) { --k: 2; border-color: var(--orange); }
-.stripes i:nth-child(4), .track i:nth-child(4) { --k: 3; border-color: var(--gold); }
+.stripes i:nth-child(1) { --k: 0; border-color: var(--brown); }
+.stripes i:nth-child(2) { --k: 1; border-color: var(--red); }
+.stripes i:nth-child(3) { --k: 2; border-color: var(--orange); }
+.stripes i:nth-child(4) { --k: 3; border-color: var(--gold); }
 
 /* ---------- hero ---------- */
 .hero { position: relative; overflow: hidden; }
@@ -137,35 +152,30 @@ a { color: inherit; text-underline-offset: .18em; text-decoration-thickness: 1.5
 }
 
 /* ---------- section scaffolding ---------- */
-section.block { position: relative; padding: var(--pad) 0; container-type: inline-size; overflow-x: clip; }
+section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 .sec-head {
-  --tw: clamp(6px, 1.1vw, 14px);                         /* track band width */
-  --tR: calc(4 * var(--tw) + clamp(10px, 1.4vw, 18px)); /* outer bend radius */
-  --tgap: clamp(10px, 1.8vw, 24px);                     /* space before the heading */
-  --content-left: max(var(--gutter), calc((100cqw - var(--max)) / 2 + var(--gutter)));
-  --indent: max(0px, calc(var(--tR) + 12px + var(--tgap) - var(--content-left)));
-  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px 40px;
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 20px 40px;
   margin-bottom: clamp(40px, 5vw, 64px);
 }
-.sec-title { position: relative; margin-left: var(--indent); }
-.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(48px, 8vw, 96px); line-height: .9; letter-spacing: -.03em; margin: 0; }
-.sec-head p { max-width: 36ch; margin: 0; font-size: 18px; }
+.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: var(--h2); line-height: .9; letter-spacing: -.03em; margin: 0; }
+.sec-head p { max-width: 36ch; margin: 0; font-size: 18px; align-self: flex-end; }
 
-/* The track: the hero's four bands, dropping in from the top edge and turning into the heading. */
-.track {
-  position: absolute; pointer-events: none;
-  top: calc(-1 * var(--pad));
-  bottom: calc(50% - 2 * var(--tw));
-  left: calc(-1 * (var(--content-left) + var(--indent)));
-  right: calc(100% + var(--tgap));
+/* The rail. It starts at the Projects heading, bends down the left edge through every
+   section, and turns into the footer bands. Band order matches the hero: brown outside. */
+.rail { position: absolute; top: 0; bottom: 0; left: 0; width: calc(4 * var(--tw)); pointer-events: none; }
+.rail i { position: absolute; top: 0; bottom: 0; left: calc(var(--k) * var(--tw)); width: var(--tw); background: var(--band); }
+.rail i:nth-child(1) { --k: 0; --band: var(--brown); }
+.rail i:nth-child(2) { --k: 1; --band: var(--red); }
+.rail i:nth-child(3) { --k: 2; --band: var(--orange); }
+.rail i:nth-child(4) { --k: 3; --band: var(--gold); }
+.rail.origin {
+  top: calc(var(--pad) + var(--h2) * .45 - 2 * var(--tw));   /* centred on the heading */
+  width: calc(var(--side) + var(--rail-left) - var(--tgap));  /* ends just before it */
 }
-.track i {
-  position: absolute; top: 0; right: 0;
-  left: calc(var(--k) * var(--tw));
-  bottom: calc(var(--k) * var(--tw));
-  border-style: solid; border-width: 0 0 var(--tw) var(--tw);
-  border-bottom-left-radius: calc(var(--tR) - var(--k) * var(--tw));
-}
+.rail.origin i, .rail.turn i { width: auto; right: 0; background: none; border: 0 solid var(--band); }
+.rail.origin i { top: calc(var(--k) * var(--tw)); border-width: var(--tw) 0 0 var(--tw); border-top-left-radius: calc(var(--tR) - var(--k) * var(--tw)); }
+.rail.turn { position: relative; top: auto; bottom: auto; width: auto; height: calc(var(--tR) + 12px); }
+.rail.turn i { bottom: calc(var(--k) * var(--tw)); border-width: 0 0 var(--tw) var(--tw); border-bottom-left-radius: calc(var(--tR) - var(--k) * var(--tw)); }
 
 /* ---------- projects (dark) ---------- */
 .dark { background: var(--ink); color: var(--bone); --focus: var(--gold); }
@@ -205,7 +215,7 @@ section.block { position: relative; padding: var(--pad) 0; container-type: inlin
 .row {
   --c: var(--orange);
   position: relative;
-  display: grid; grid-template-columns: clamp(150px, 16vw, 200px) minmax(0, 1fr) minmax(0, 1.35fr) 48px;
+  display: grid; grid-template-columns: clamp(150px, 16vw, 200px) minmax(0, 1fr) minmax(0, 1.35fr) auto;
   gap: 28px; align-items: center;
   padding: 26px 20px;
   border-radius: 22px;
@@ -214,44 +224,46 @@ section.block { position: relative; padding: var(--pad) 0; container-type: inlin
 }
 .row[data-cat="rocketry"] { --c: var(--gold); }
 .row[data-cat="composites"] { --c: var(--red-bright); }
-/* dividers live on their own layer so the rounded hover fill doesn't curl them */
+/* dividers live on their own layer so the rounded hover doesn't curl them */
 .row::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
   background: rgba(235,231,223,.18); transition: opacity .18s;
 }
-.row:hover { background: var(--c); }
+.row:hover { background: rgba(235,231,223,.04); }
 .row:hover::after { opacity: 0; }
-.row:hover, .row:hover .sub, .row:hover p { color: var(--ink); }
-.row:focus-within { outline: 3px solid var(--focus); outline-offset: -2px; border-radius: 22px; }
-.row h3 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3.4vw, 46px); line-height: .95; letter-spacing: -.02em; margin: 0 0 10px; }
-.row h3 a { text-decoration: none; }
-.row h3 a:focus-visible { outline: none; }
-.row h3 a::after { content: ""; position: absolute; inset: 0; } /* whole row is the link */
-.row h3 .icon { display: none; width: .6em; height: .6em; vertical-align: .08em; margin-left: .1em; }
-.row .sub { font-size: 15px; font-weight: 500; color: var(--c); margin: 0; transition: color .18s; }
-.row p { margin: 0 0 14px; font-size: 17px; color: #cfc8bc; transition: color .18s; }
+.row:has(.repo:focus-visible) { outline: 3px solid var(--focus); outline-offset: -2px; }
+.row h3 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3.4vw, 46px); line-height: 1; letter-spacing: -.02em; margin: 0 0 10px; transition: color .18s; }
+.row:hover h3 { color: var(--c); }
+.row .sub { font-size: 15px; font-weight: 500; color: var(--c); margin: 0; }
+.row .desc { position: relative; z-index: 1; } /* above the row link, so the text stays selectable */
+.row p { margin: 0 0 14px; font-size: 17px; color: #cfc8bc; }
 .row .note { font-size: 15px; font-style: italic; margin-top: -4px; }
+
 .thumb {
-  display: grid; place-items: center; aspect-ratio: 4 / 3;
-  padding: 12px; border-radius: 16px;
-  background: #1d1a17; transition: background .18s;
+  position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: 16px; background: #1d1a17; transition: background .18s;
 }
-.thumb img { width: 100%; height: 100%; object-fit: contain; }
-.row:hover .thumb { background: rgba(21,19,17,.12); }
-.thumb.empty { background: none; border: 1.5px dashed rgba(235,231,223,.25); font-size: 14px; color: #9d968b; text-align: center; }
-.row:hover .thumb.empty { border-color: rgba(21,19,17,.35); color: var(--ink); }
-.arrow {
-  width: 48px; height: 48px; border-radius: 50%;
-  border: 1.5px solid currentColor;
-  display: grid; place-items: center; font-size: 20px;
-  transition: transform .18s, background .18s, color .18s;
+.thumb img { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); object-fit: contain; }
+.row:hover .thumb:not(.tile) { background: var(--c); }
+/* No photo yet: the project's headline number on a small version of the hero bend. */
+.tile { padding: 14px 16px; }
+.tile b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3vw, 40px); line-height: 1; letter-spacing: -.02em; color: var(--c); }
+.tile span { display: block; margin-top: 4px; font-size: 14px; color: #b8b1a6; }
+.stripes.mini { --w: 5px; --R: 34px; --edge-b: 14px; --edge-r: 14px; }
+
+.repo {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  min-height: 44px; padding: 8px 18px; border-radius: 999px;
+  border: 1.5px solid rgba(235,231,223,.45); color: var(--bone);
+  font-family: var(--display); font-size: 16px; text-decoration: none;
+  transition: background .18s, color .18s, border-color .18s;
 }
-.row:hover .arrow { background: var(--ink); color: var(--c); border-color: var(--ink); transform: rotate(45deg); }
+.repo::after { content: ""; position: absolute; inset: 0; border-radius: 22px; } /* whole row opens the repo */
+.row:hover .repo { background: var(--c); border-color: var(--c); color: var(--ink); }
 @media (max-width: 860px) {
   .row { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 24px 12px; margin: 0 -12px; }
   .thumb { aspect-ratio: 16 / 9; max-height: 240px; }
-  .row h3 .icon { display: inline-block; }
-  .row .arrow { display: none; }
+  .repo { justify-self: start; margin-top: -4px; }
 }
 
 /* ---------- about ---------- */
@@ -283,7 +295,6 @@ section.block { position: relative; padding: var(--pad) 0; container-type: inlin
 
 /* ---------- contact ---------- */
 .contact { background: var(--contact); color: var(--bone); --focus: var(--bone); }
-.contact .sec-title { margin-left: 0; }
 .big-mail {
   display: inline-block; margin-bottom: 48px;
   font-family: var(--display); font-weight: 400;
@@ -291,7 +302,7 @@ section.block { position: relative; padding: var(--pad) 0; container-type: inlin
   text-decoration: none; overflow-wrap: anywhere;
   border-bottom: 4px solid var(--gold); padding-bottom: 6px;
 }
-.big-mail:hover { color: var(--gold); }
+.big-mail:hover { border-bottom-color: var(--bone); }
 .channels { display: flex; flex-wrap: wrap; gap: 12px; }
 .channel {
   display: inline-flex; align-items: center; gap: 12px;
@@ -306,9 +317,6 @@ section.block { position: relative; padding: var(--pad) 0; container-type: inlin
 
 /* ---------- footer ---------- */
 footer { background: var(--ink); color: #a9a298; font-size: 14px; --focus: var(--gold); }
-.bands { display: grid; grid-template-rows: repeat(4, 8px); }
-.bands i:nth-child(1) { background: var(--gold); } .bands i:nth-child(2) { background: var(--orange); }
-.bands i:nth-child(3) { background: var(--red); } .bands i:nth-child(4) { background: var(--brown); }
 footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 28px; padding-bottom: 28px; }
 
 @media (prefers-reduced-motion: reduce) {

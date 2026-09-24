@@ -20,6 +20,7 @@ const projects = defineCollection({
       repo: z.string().optional(), // repo name under github.com/ProgrammerTurtle
       image: image().optional(),
       imageAlt: z.string().optional(),
+      tile: z.object({ value: z.string(), label: z.string() }).optional(), // shown when there's no image
     }),
 });
 

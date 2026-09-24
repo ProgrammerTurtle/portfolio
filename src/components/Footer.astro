@@ -1,8 +1,9 @@
 ---
+import Rail from './Rail.astro';
 const year = new Date().getFullYear();
 ---
 <footer>
-  <div class="bands" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <Rail kind="turn" />
   <div class="wrap">
     <span>© {year} Parker Rupe</span>
     <span>Built in Boise, Idaho · Headings in <a href="/fonts/Neometric-LICENSE.txt">Neometric</a> by Andres Sanchez</span>

@@ -2,11 +2,13 @@
 import { channels, EMAIL } from '../data/site';
 import Icon from './Icon.astro';
 import NewTab from './NewTab.astro';
+import Rail from './Rail.astro';
 import SectionHead from './SectionHead.astro';
 ---
 <section class="block contact" id="contact">
+  <Rail />
   <div class="wrap">
-    <SectionHead title="Say hi" track={false}>
+    <SectionHead title="Say hi">
       <p>Want to collaborate, sponsor a build, or just talk printers and rockets? Email is the best way to reach me.</p>
     </SectionHead>
     <a class="big-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>

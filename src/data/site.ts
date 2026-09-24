@@ -31,6 +31,18 @@ export const experience = [
     ],
   },
   {
+    role: 'Exhibitor',
+    org: 'Open Sauce 2026 · San Francisco',
+    when: '2026',
+    points: ['Exhibited DoNotDelta, my colinear delta 3D printer'],
+  },
+  {
+    role: 'Exhibitor',
+    org: 'Open Sauce 2025 · San Francisco',
+    when: '2025',
+    points: ['Exhibited DoNotDelta, my colinear delta 3D printer'],
+  },
+  {
     role: 'Stocker / Attendant',
     org: 'Great Scotts Gas Station · Boise, ID',
     when: 'Mar 2024 – Oct 2024',

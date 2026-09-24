@@ -1,0 +1,7 @@
+Neometric-Extras.otf
+
+A derivative of Neometric by Andres Sanchez, licensed CC BY-NC-SA 3.0 (see
+Neometric-LICENSE.txt). The original work has been modified: this file adds
+characters the original doesn't include (é É á @ - – — / _ ' ’ ‘ " ″ · … + × < > °).
+The accented letters, @, and curly marks reuse Neometric's own outlines; the rest
+are drawn on its stroke width and proportions. Built by scripts/neometric-extras.mjs.

@@ -1,0 +1,7 @@
+---
+// One piece of the rail. "origin" bends out of the Projects heading, plain pieces run
+// down each later section, and "turn" becomes the footer bands.
+interface Props { kind?: 'origin' | 'turn' }
+const { kind } = Astro.props;
+---
+<div class:list={['rail', kind]} aria-hidden="true"><i></i><i></i><i></i><i></i></div>

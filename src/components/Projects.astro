@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Chips from './Chips.astro';
 import Icon from './Icon.astro';
 import NewTab from './NewTab.astro';
+import Rail from './Rail.astro';
 import SectionHead from './SectionHead.astro';
 import { GITHUB } from '../data/site';
 
@@ -16,6 +17,7 @@ const FeaturedBody = featured ? (await render(featured)).Content : null;
 const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await render(p)).Content })));
 ---
 <section class="block dark" id="projects">
+  <Rail kind="origin" />
   <div class="wrap">
     <SectionHead title="Projects">
       <p>Everything here is open source. Each project links to its GitHub repo.</p>
@@ -37,7 +39,7 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
           <Chips chips={featured.data.chips} />
           {featured.data.repo && (
             <div class="go">
-              <a class="btn" href={repoUrl(featured.data.repo)} target="_blank" rel="noopener">View the repo <Icon name="arrow-up-right" /><NewTab /></a>
+              <a class="btn" href={repoUrl(featured.data.repo)} target="_blank" rel="noopener">View on GitHub <Icon name="arrow-up-right" /><NewTab /></a>
             </div>
           )}
         </div>
@@ -51,15 +53,15 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
             <div class="thumb">
               <Image src={p.data.image} alt="" widths={[360, 720]} sizes="(max-width: 860px) 100vw, 200px" />
             </div>
-          ) : (
-            <div class="thumb empty">Photo coming soon</div>
-          )}
+          ) : p.data.tile ? (
+            <div class="thumb tile">
+              <div class="stripes mini" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <b>{p.data.tile.value}</b>
+              <span>{p.data.tile.label}</span>
+            </div>
+          ) : <div />}
           <div>
-            <h3>
-              {p.data.repo ? (
-                <a href={repoUrl(p.data.repo)} target="_blank" rel="noopener">{p.data.name}<Icon name="arrow-up-right" /><span class="sr-only">, GitHub repo</span><NewTab /></a>
-              ) : p.data.name}
-            </h3>
+            <h3>{p.data.name}</h3>
             <p class="sub">{p.data.kicker}</p>
           </div>
           <div class="desc">
@@ -67,7 +69,11 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
             {p.data.note && <p class="note">{p.data.note}</p>}
             <Chips chips={p.data.chips} />
           </div>
-          <span class="arrow" aria-hidden="true"><Icon name="arrow-up-right" /></span>
+          {p.data.repo && (
+            <a class="repo" href={repoUrl(p.data.repo)} target="_blank" rel="noopener">
+              GitHub <Icon name="arrow-up-right" /><span class="sr-only"> repo for {p.data.name}</span><NewTab />
+            </a>
+          )}
         </li>
       ))}
     </ul>
