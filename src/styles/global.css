@@ -236,9 +236,8 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
   border-bottom: 1px solid rgba(235,231,223,.18);
   color: var(--bone);
 }
-.row { --band: var(--orange); }
-.row[data-cat="rocketry"] { --c: var(--gold); --band: var(--gold); }
-.row[data-cat="composites"] { --c: var(--red-bright); --band: var(--red); }
+.row[data-cat="rocketry"] { --c: var(--gold); }
+.row[data-cat="composites"] { --c: var(--red-bright); }
 .row .head { grid-area: head; align-self: center; }
 .row .body { grid-area: body; }
 .row h3 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 3vw, 40px); line-height: 1; letter-spacing: -.02em; margin: 0 0 8px; transition: color .18s; }
@@ -250,19 +249,14 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 .row .chips li { border: 0; padding: 0; border-radius: 0; opacity: 1; color: #9d968b; }
 
 .thumb {
-  /* band width, bend radius, and inset from the panel edge */
-  --bw: 5px; --bR: 24px; --be: 6px;
+  /* stripe band width, bend radius, and inset from the panel edge */
+  --bw: 2px; --bR: 26px; --be: 6px;
   --pl: 9%; --pt: 9%;
-  --pr: calc(var(--be) + var(--bw) + 7%); --pb: calc(var(--be) + var(--bw) + 7%);
+  --pr: calc(var(--be) + 4 * var(--bw) + 7%); --pb: calc(var(--be) + 4 * var(--bw) + 7%);
   grid-area: thumb; position: relative; aspect-ratio: 1; overflow: hidden;
   border-radius: 14px; background: #1d1a17; transition: background .2s;
 }
-.bend {
-  position: absolute; left: 0; top: 0; right: var(--be); bottom: var(--be); pointer-events: none;
-  border: 0 solid var(--band); border-width: 0 var(--bw) var(--bw) 0;
-  border-bottom-right-radius: var(--bR);
-  transition: border-color .2s;
-}
+.stripes.card-bend { --w: var(--bw); --R: var(--bR); --edge-b: var(--be); --edge-r: var(--be); }
 .thumb img {
   position: absolute; left: var(--pl); top: var(--pt);
   width: calc(100% - var(--pl) - var(--pr)); height: calc(100% - var(--pt) - var(--pb));
@@ -271,9 +265,8 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 .thumb-link { position: absolute; inset: 0; border-radius: inherit; }
 
 /* The photo and the GitHub button are the two links; hovering either lights both.
-   The panel prints in its band colour and the band flips to ink. */
-.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .thumb { background: var(--band); }
-.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .bend { border-color: var(--ink); }
+   The panel turns bone, so the card becomes a small copy of the hero. */
+.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .thumb { background: var(--bone); }
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .tile b,
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .tile span { color: var(--ink); }
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) h3 { color: var(--c); }
@@ -312,7 +305,7 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
     padding: 0 0 26px; border: 0; border-radius: 24px; overflow: hidden;
     background: var(--ink-2);
   }
-  .thumb { --bw: 14px; --bR: 96px; --be: 20px; --pl: 7%; --pt: 9%; aspect-ratio: 16 / 9; border-radius: 0; margin-bottom: 24px; }
+  .thumb { --bw: 7px; --bR: 96px; --be: 20px; --pl: 7%; --pt: 9%; aspect-ratio: 16 / 9; border-radius: 0; margin-bottom: 24px; }
   .row h3 { font-size: clamp(32px, 3.3vw, 46px); }
   .row .head, .row .body { padding: 0 28px; }
   .row .head { margin-bottom: 12px; align-self: stretch; }
