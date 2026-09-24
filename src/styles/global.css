@@ -232,10 +232,16 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
   display: grid; gap: 12px 16px; align-items: start;
   grid-template-columns: 96px minmax(0, 1fr);
   grid-template-areas: "thumb head" "body body" "repo repo";
-  padding: 22px 0;
-  border-bottom: 1px solid rgba(235,231,223,.18);
+  position: relative;
+  padding: 22px 0 30px;
   color: var(--bone);
 }
+/* The footer's four bands along the bottom of every project: thin dividers on phones, the card's base on desktop. */
+.row::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(4 * var(--sb)); pointer-events: none;
+  background: linear-gradient(var(--gold) 0 25%, var(--orange) 0 50%, var(--red) 0 75%, var(--brown) 0);
+}
+.row { --sb: 2px; }
 .row[data-cat="rocketry"] { --c: var(--gold); }
 .row[data-cat="composites"] { --c: var(--red-bright); }
 .row .head { grid-area: head; align-self: center; }
@@ -249,14 +255,10 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 .row .chips li { border: 0; padding: 0; border-radius: 0; opacity: 1; color: #9d968b; }
 
 .thumb {
-  /* stripe band width, bend radius, and inset from the panel edge */
-  --bw: 2px; --bR: 26px; --be: 6px;
-  --pl: 9%; --pt: 9%;
-  --pr: calc(var(--be) + 4 * var(--bw) + 7%); --pb: calc(var(--be) + 4 * var(--bw) + 7%);
+  --pl: 9%; --pt: 9%; --pr: 9%; --pb: 9%; /* inset of the photo inside the panel */
   grid-area: thumb; position: relative; aspect-ratio: 1; overflow: hidden;
   border-radius: 14px; background: #1d1a17; transition: background .2s;
 }
-.stripes.card-bend { --w: var(--bw); --R: var(--bR); --edge-b: var(--be); --edge-r: var(--be); }
 .thumb img {
   position: absolute; left: var(--pl); top: var(--pt);
   width: calc(100% - var(--pl) - var(--pr)); height: calc(100% - var(--pt) - var(--pb));
@@ -264,9 +266,8 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
 }
 .thumb-link { position: absolute; inset: 0; border-radius: inherit; }
 
-/* The photo and the GitHub button are the two links; hovering either lights both.
-   The panel turns bone, so the card becomes a small copy of the hero. */
-.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .thumb { background: var(--bone); }
+/* The photo and the GitHub button are the two links; hovering either lights both. */
+.row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .thumb { background: var(--c); }
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .tile b,
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) .tile span { color: var(--ink); }
 .row:has(.thumb-link:hover, .repo:hover, .repo:focus-visible) h3 { color: var(--c); }
@@ -302,10 +303,11 @@ section.block { position: relative; padding: var(--pad) 0; overflow-x: clip; }
   .manifest { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: start; border-top: 0; }
   .row {
     display: flex; flex-direction: column; align-items: stretch; gap: 0;
-    padding: 0 0 26px; border: 0; border-radius: 24px; overflow: hidden;
+    padding-top: 0; border-radius: 24px; overflow: hidden;
     background: var(--ink-2);
   }
-  .thumb { --bw: 7px; --bR: 96px; --be: 20px; --pl: 7%; --pt: 9%; aspect-ratio: 16 / 9; border-radius: 0; margin-bottom: 24px; }
+  .row { --sb: 6px; padding-bottom: calc(26px + 4 * var(--sb)); }
+  .thumb { --pl: 7%; --pt: 8%; --pr: 7%; --pb: 8%; aspect-ratio: 16 / 9; border-radius: 0; margin-bottom: 24px; }
   .row h3 { font-size: clamp(32px, 3.3vw, 46px); }
   .row .head, .row .body { padding: 0 28px; }
   .row .head { margin-bottom: 12px; align-self: stretch; }

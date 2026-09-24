@@ -54,8 +54,6 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
         return (
           <li class="row" data-cat={p.data.cat}>
             <div class:list={['thumb', { tile: !p.data.image }]}>
-              {/* The hero's four bands at card scale, bending around the photo. */}
-              <div class="stripes card-bend" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
               {p.data.image ? (
                 <Image src={p.data.image} alt={p.data.imageAlt ?? ''} widths={[320, 640]} sizes="(max-width: 860px) 96px, 560px" />
               ) : p.data.tile && (
