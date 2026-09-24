@@ -54,11 +54,12 @@ const rows = await Promise.all(rest.map(async (p) => ({ p, Content: (await rende
         return (
           <li class="row" data-cat={p.data.cat}>
             <div class:list={['thumb', { tile: !p.data.image }]}>
+              {/* The card's own band from the rail, in its category colour, bending around the photo. */}
+              <span class="bend" aria-hidden="true"></span>
               {p.data.image ? (
                 <Image src={p.data.image} alt={p.data.imageAlt ?? ''} widths={[320, 640]} sizes="(max-width: 860px) 96px, 560px" />
               ) : p.data.tile && (
                 <div aria-hidden="true">
-                  <div class="stripes mini"><i></i><i></i><i></i><i></i></div>
                   <b>{p.data.tile.value}</b>
                   <span>{p.data.tile.label}</span>
                 </div>
